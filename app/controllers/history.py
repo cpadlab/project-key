@@ -4,6 +4,7 @@ from typing import List
 
 from app.core.config import settings
 from app.utils.logger import logger
+from app.utils.file import get_resolved_path, ensure_parent_exists
 
 
 def _get_history_path() -> Path:
@@ -14,9 +15,10 @@ def _get_history_path() -> Path:
     :return: A Path object pointing to the history JSON file.
     :rtype: Path
     """
-    temp_path = Path(settings.TEMP_DIR)
-    temp_path.mkdir(parents=True, exist_ok=True)
-    return temp_path / settings.HISTORY_FILENAME
+    raw_path = Path(settings.TEMP_DIR) / settings.HISTORY_FILENAME
+    resolved_path = get_resolved_path(str(raw_path))
+    ensure_parent_exists(resolved_path)
+    return resolved_path
 
 
 def get_history() -> List[str]:

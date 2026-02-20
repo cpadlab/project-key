@@ -1,7 +1,11 @@
 from pathlib import Path
+import logging
 from typing import Optional
 
-from app.utils.logger import logger
+from app.core.config import settings
+
+
+logger = logging.getLogger(settings.PROJECT_NAME)
 
 
 def get_resolved_path(path: str, suffix: Optional[str] = None) -> Path:

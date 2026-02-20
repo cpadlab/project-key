@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from app.core.config import settings
+from app.utils.file import get_resolved_path, ensure_parent_exists
 
 
 def setup_logger() -> logging.Logger:
@@ -28,11 +29,11 @@ def setup_logger() -> logging.Logger:
 
         logger.addHandler(console_handler)
 
-        log_dir = Path(settings.LOG_DIR)
-        log_file = log_dir / settings.LOG_FILENAME
-        log_dir.mkdir(parents=True, exist_ok=True)
+        log_path = Path(settings.LOG_DIR) / settings.LOG_FILENAME
+        resolved_log_file = get_resolved_path(str(log_path))
+        ensure_parent_exists(resolved_log_file)
 
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler = logging.FileHandler(resolved_log_file, encoding="utf-8")
         file_handler.setLevel(numeric_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
