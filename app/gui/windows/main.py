@@ -27,6 +27,6 @@ class MainWindow(QMainWindow):
         
         self.setStyleSheet(f"""
             QMainWindow {{
-                background-color: {Colors.DARK_BACKGROUND_MAIN};
+                background-color: {Colors.BACKGROUND};
             }}
         """)

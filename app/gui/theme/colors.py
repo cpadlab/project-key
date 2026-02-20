@@ -1,24 +1,18 @@
 
-COLOR_NEUTRAL_50 = "#fafafa"
-COLOR_NEUTRAL_100 = "#f5f5f5"
-COLOR_NEUTRAL_200 = "#e5e5e5"
-COLOR_NEUTRAL_300 = "#d4d4d4"
-COLOR_NEUTRAL_400 = "#a3a3a3"
-COLOR_NEUTRAL_500 = "#737373"
-COLOR_NEUTRAL_600 = "#525252"
-COLOR_NEUTRAL_700 = "#404040"
-COLOR_NEUTRAL_800 = "#262626"
-COLOR_NEUTRAL_900 = "#171717"
-COLOR_NEUTRAL_950 = "#0a0a0a"
-
-
 class Colors:
     """
     Centralized color palette for the entire application.
     """
+    BACKGROUND = "#0a0a0a"
+    FOREGROUND = "#fafafa"
+    CARD = "#171717"
+    CARD_FOREGROUND = "#fafafa"
+    PRIMARY = "#ea580c"
+    PRIMARY_FOREGROUND = "#fafafa"
+    BORDER = "rgba(255, 255, 255, 0.1)"
+    INPUT = "rgba(255, 255, 255, 0.15)"
+    MUTED = "#262626"
+    MUTED_FOREGROUND = "#a3a3a3"
 
-    DARK_BACKGROUND_MAIN = COLOR_NEUTRAL_950
-    LIGHT_BACKGROUND_MAIN = COLOR_NEUTRAL_50
 
-    DARK_TEXT_MAIN = COLOR_NEUTRAL_50
-    LIGHT_TEXT_MAIN = COLOR_NEUTRAL_950
+    

@@ -62,9 +62,9 @@ def create_security_dashboard_figure() -> Figure:
     """
     stats = get_security_summary()
     
-    fig = Figure(figsize=(8, 4), facecolor=Colors.DARK_BACKGROUND_MAIN)
+    fig = Figure(figsize=(8, 4), facecolor=Colors.BACKGROUND)
     ax = fig.add_subplot(111)
-    ax.set_facecolor(Colors.DARK_BACKGROUND_MAIN)
+    ax.set_facecolor(Colors.BACKGROUND)
 
     labels = ['Safe', 'Weak', 'Duplicated', 'Pwned']
     sizes = [stats["safe"], stats["weak"], stats["duplicate"], stats["pwned"]]
@@ -87,7 +87,7 @@ def create_security_dashboard_figure() -> Figure:
         pctdistance=0.85
     )
 
-    centre_circle = plt.Circle((0,0), 0.70, fc=Colors.DARK_BACKGROUND_MAIN)
+    centre_circle = plt.Circle((0,0), 0.70, fc=Colors.BACKGROUND)
     ax.add_artist(centre_circle)
 
     ax.text(
