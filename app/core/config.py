@@ -94,6 +94,7 @@ class Settings(BaseSettings):
     DEFAULT_WINDOW_HEIGHT: int = Field(default=600, alias="height")
     TEMP_DIR: str = Field(default="temp")
     HISTORY_FILENAME: str = Field(default="history.json")
+    PASSWORD_AUDIT_INTERVAL: int = Field(default=30)
 
     model_config = SettingsConfigDict(
         extra="ignore",

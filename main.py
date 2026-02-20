@@ -7,7 +7,7 @@ from pathlib import Path
 from app.utils.logger import logger, update_logger_level
 from app.utils.cli import get_args
 from app.core.config import settings
-from app.controllers.updater import check_for_updates
+from app.services.passwords.main import start_password_security_audits
 from app.gui.manager import GUIManager
 
 
@@ -45,6 +45,8 @@ def main(arguments: argparse.Namespace) -> None:
 
         gui = GUIManager()
         gui.run()
+
+        start_password_security_audits()
 
     except FileNotFoundError as e:
         logger.critical(f"Critical initialization error: {e}")
