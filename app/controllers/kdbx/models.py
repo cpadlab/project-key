@@ -60,6 +60,8 @@ class GroupModel(BaseModel):
     name: str = Field(..., min_length=1)
     icon: Optional[int] = None
     color: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
     @classmethod
@@ -71,5 +73,7 @@ class GroupModel(BaseModel):
         return cls(
             name=kp_group.name,
             icon=kp_group.icon,
-            color=custom.get("color")
+            color=custom.get("color"),
+            created_at=kp_group.ctime,
+            updated_at=kp_group.mtime
         )
