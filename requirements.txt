@@ -4,3 +4,4 @@ pyqt6==6.10.2
 pykeepass==4.1.1
 pyzbar==0.1.9
 pillow==12.1.1
+pyperclip==1.11.0
