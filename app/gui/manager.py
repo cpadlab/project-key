@@ -1,11 +1,13 @@
 import threading
 import sys
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QApplication
 
 from app.gui.windows.main import MainWindow
 from app.utils.logger import logger
 from app.controllers.updater import check_for_updates
 from app.services.main import start_background_services
+from app.gui.theme.fonts import load_fonts
 
 
 class GUIManager:
@@ -38,5 +40,9 @@ class GUIManager:
 
         services_thread = threading.Thread(target=start_background_services, daemon=True)
         services_thread.start()
+
+        load_fonts()
+        global_font = QFont("Inter", 10)
+        self.app.setFont(global_font)
 
         sys.exit(self.app.exec())
