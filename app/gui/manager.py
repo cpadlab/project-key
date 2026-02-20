@@ -1,29 +1,20 @@
 import threading
-import sys
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QApplication
 
-from app.gui.windows.main import MainWindow
 from app.utils.logger import logger
 from app.controllers.updater import check_for_updates
 from app.services.main import start_background_services
-from app.gui.theme.fonts import load_fonts
 
 
 class GUIManager:
     """
-    Manage the lifecycle of the graphical user interface (GUI) and its windows.
-
-    This class is responsible for initializing the PyQt6 application instance,
-    creating the main application window, and safely executing the main event loop.
     """
+    
     
     def __init__(self):
         """
         Initialize the GUI manager.
         """
-        self.app = QApplication(sys.argv)
-        self.main_window = MainWindow()
+        
 
     def run(self) -> None:
         """
@@ -33,16 +24,9 @@ class GUIManager:
         :rtype: None
         """
         logger.info("Starting the graphical interface...")
-        self.main_window.show()
 
         update_thread = threading.Thread(target=check_for_updates, daemon=True)
         update_thread.start()
 
         services_thread = threading.Thread(target=start_background_services, daemon=True)
         services_thread.start()
-
-        load_fonts()
-        global_font = QFont("Inter", 10)
-        self.app.setFont(global_font)
-
-        sys.exit(self.app.exec())
