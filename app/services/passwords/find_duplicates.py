@@ -9,7 +9,6 @@ from app.controllers.kdbx.models import EntryModel
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
-DUPLICATE_TAG = "duplicate"
 
 
 def get_duplicate_map() -> Dict[str, List[EntryModel]]:
@@ -59,14 +58,14 @@ def duplicate_password_audit_task() -> None:
                 changed = False
                 current_tags = list(entry.tags)
 
-                if is_duplicated and DUPLICATE_TAG not in current_tags:
-                    current_tags.append(DUPLICATE_TAG)
+                if is_duplicated and settings.DUPLICATE_TAG not in current_tags:
+                    current_tags.append(settings.DUPLICATE_TAG)
                     entry.tags = current_tags
                     changed = True
                     logger.warning(f"Security Risk: Tagging duplicated entry '{entry.title}'")
 
-                elif not is_duplicated and DUPLICATE_TAG in current_tags:
-                    current_tags.remove(DUPLICATE_TAG)
+                elif not is_duplicated and settings.DUPLICATE_TAG in current_tags:
+                    current_tags.remove(settings.DUPLICATE_TAG)
                     entry.tags = current_tags
                     changed = True
                     logger.info(f"Security Fixed: Removing duplicate tag from '{entry.title}'")

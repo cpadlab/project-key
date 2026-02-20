@@ -12,9 +12,6 @@ from app.controllers.kdbx.backups import execute_backup_rotation
 
 logger = logging.getLogger(settings.PROJECT_NAME)
 
-RECYCLE_BIN_NAME = "Recycle Bin"
-PERSONAL_GROUP_NAME = "Personal"
-
 
 def _save_vault_safely(vault: PyKeePass) -> None:
     """
@@ -96,7 +93,7 @@ def list_recycle_bin_entries() -> List[EntryModel]:
     :return: A list of entries found in the Recycle Bin.
     :rtype: List[EntryModel]
     """
-    return list_entries_by_group(RECYCLE_BIN_NAME)
+    return list_entries_by_group(settings.RECYCLE_BIN_NAME)
 
 
 def find_entries(query: Optional[str] = None, group_name: Optional[str] = None, tags: Optional[List[str]] = None) -> List[EntryModel]:
@@ -228,7 +225,7 @@ def update_group(group_name: str, data: GroupModel) -> bool:
         return False
 
 
-def delete_group(group_name: str, force_delete_entries: bool = False, move_entries_to: Optional[str] = PERSONAL_GROUP_NAME) -> bool:
+def delete_group(group_name: str, force_delete_entries: bool = False, move_entries_to: Optional[str] = settings.PERSONAL_GROUP_NAME) -> bool:
     """
     Delete a group with safety checks for contained entries.
 
@@ -284,7 +281,7 @@ def add_entry(entry: EntryModel) -> bool:
         logger.warning("Attempted to add entry but no vault session is active.")
         return False
 
-    group_name = entry.group if entry.group and entry.group != "Root" else PERSONAL_GROUP_NAME
+    group_name = entry.group if entry.group and entry.group != "Root" else settings.PERSONAL_GROUP_NAME
     target_group = get_group(group_name)
     
     if not target_group:
@@ -391,7 +388,7 @@ def delete_entry(entry_uuid: str, permanent: bool = False) -> bool:
         else:
             timestamp = datetime.now().isoformat()
             entry.set_custom_property("deleted_at", timestamp)
-            move_entry(entry_uuid, RECYCLE_BIN_NAME)
+            move_entry(entry_uuid, settings.RECYCLE_BIN_NAME)
             logger.info(f"Entry {entry_uuid} moved to Recycle Bin.") 
 
         _save_vault_safely(vault=vault)

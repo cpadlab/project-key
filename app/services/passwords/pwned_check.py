@@ -9,8 +9,6 @@ from app.controllers.kdbx.models import EntryModel
 
 logger = logging.getLogger(settings.PROJECT_NAME)
 
-PWNED_TAG = "pwned"
-
 
 def _is_password_pwned(password: str) -> bool:
     """
@@ -59,14 +57,14 @@ def pwned_password_audit_task() -> None:
             changed = False
             current_tags = list(entry.tags)
 
-            if is_pwned and PWNED_TAG not in current_tags:
-                current_tags.append(PWNED_TAG)
+            if is_pwned and settings.PWNED_TAG not in current_tags:
+                current_tags.append(settings.PWNED_TAG)
                 entry.tags = current_tags
                 changed = True
                 logger.warning(f"CRITICAL: Password for '{entry.title}' found in a data breach!")
 
-            elif not is_pwned and PWNED_TAG in current_tags:
-                current_tags.remove(PWNED_TAG)
+            elif not is_pwned and settings.PWNED_TAG in current_tags:
+                current_tags.remove(settings.PWNED_TAG)
                 entry.tags = current_tags
                 changed = True
                 logger.info(f"Security Update: Entry '{entry.title}' is no longer flagged as pwned.")

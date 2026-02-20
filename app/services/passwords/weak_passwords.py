@@ -9,7 +9,6 @@ from app.controllers.kdbx.models import EntryModel
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
-WEAK_TAG = "weak"
 
 
 def calculate_global_health_score(entries: List[EntryModel]) -> float:
@@ -55,14 +54,14 @@ def weak_password_audit_task() -> None:
             changed = False
             current_tags = list(entry.tags)
 
-            if is_weak and WEAK_TAG not in current_tags:
-                current_tags.append(WEAK_TAG)
+            if is_weak and settings.WEAK_TAG not in current_tags:
+                current_tags.append(settings.WEAK_TAG)
                 entry.tags = current_tags
                 changed = True
                 logger.warning(f"Security Alert: Entry '{entry.title}' marked as weak (Score: {strength['score']})")
 
-            elif not is_weak and WEAK_TAG in current_tags:
-                current_tags.remove(WEAK_TAG)
+            elif not is_weak and settings.WEAK_TAG in current_tags:
+                current_tags.remove(settings.WEAK_TAG)
                 entry.tags = current_tags
                 changed = True
                 logger.info(f"Security Improved: Removing weak tag from '{entry.title}'")

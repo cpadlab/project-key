@@ -10,7 +10,6 @@ from app.utils.file import get_resolved_path
 
 logger = logging.getLogger(settings.PROJECT_NAME)
 
-DUPLICATE_TAG = "duplicate"
 PRESETS = {
     "chrome": {
         "title": "name",
@@ -141,8 +140,8 @@ def execute_final_import(entries: List[EntryModel], target_group: str) -> Dict[s
         entry.group = target_group
         
         if (entry.title, entry.username) in existing_keys:
-            if DUPLICATE_TAG not in entry.tags:
-                entry.tags.append(DUPLICATE_TAG)
+            if settings.DUPLICATE_TAG not in entry.tags:
+                entry.tags.append(settings.DUPLICATE_TAG)
             logger.info(f"Import: Duplicate detected for '{entry.title}' (User: {entry.username}). Tagging...")
 
         if add_entry(entry):
