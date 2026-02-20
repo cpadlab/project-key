@@ -1,9 +1,13 @@
-from pathlib import Path
 import configparser
-from typing import Optional
+from pathlib import Path
+from typing import Any, Dict, Optional, Tuple, Type
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from pydantic.fields import FieldInfo
+from pydantic_settings import (
+    BaseSettings, 
+    SettingsConfigDict, 
+    PydanticBaseSettingsSource
+)
 
 # Base path definitions usando pathlib
 _CURRENT_DIR = Path(__file__).resolve().parent
@@ -20,17 +24,61 @@ def _get_version() -> str:
     :rtype: str
     """
     try:
-        # pathlib permite leer texto directamente sin necesidad de usar el bloque 'with open()'
         return VERSION_FILE.read_text(encoding="utf-8").strip()
     except FileNotFoundError:
         return "unknown"
+
+
+class IniConfigSettingsSource(PydanticBaseSettingsSource):
+    """
+    Custom configuration source for Pydantic to read 
+    default values from an .ini file.
+    """
+
+
+    def get_field_value(self, field: FieldInfo, field_name: str) -> Tuple[Any, str, bool]:
+        """
+        """
+        return None, field_name, False
+
+
+    def prepare_field_value(self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool) -> Any:
+        """
+        """
+        return value
+
+
+    def __call__(self) -> Dict[str, Any]:
+        """
+        Reads the default .ini configuration file and maps its 
+        values to the fields defined in the Pydantic model.
+
+        :return: A dictionary with the keys and values extracted from the file, 
+                 ready to be injected and validated.
+        :rtype: Dict[str, Any]
+        """
+        settings_dict: Dict[str, Any] = {}
+        
+        if not DEFAULT_INI_FILE.exists():
+            return settings_dict
+
+        config = configparser.ConfigParser()
+        config.read(DEFAULT_INI_FILE, encoding="utf-8")
+        
+        target_fields = self.settings_cls.model_fields.keys()
+        for section in config.sections() + ['DEFAULT']:
+            for field_name in target_fields:
+                val = config[section].get(field_name.lower(), None)
+                if val is not None:
+                    settings_dict[field_name] = val
+                    
+        return settings_dict
 
 
 class Settings(BaseSettings):
     """
     Global application settings.
     """
-
 
     PROJECT_NAME: str = "Project Key"
     VERSION: str = _get_version()
@@ -42,13 +90,30 @@ class Settings(BaseSettings):
     LOG_FILENAME: str = Field(default="app.log")
 
     model_config = SettingsConfigDict(
-        extra="ignore"
+        extra="ignore",
+        validate_assignment=True
     )
+
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        return (
+            init_settings,
+            env_settings,
+            IniConfigSettingsSource(settings_cls),
+        )
 
 
     def load_from_ini(self, ini_path: Path) -> None:
         """
-        Load configuration values from a specified INI file.
+        Load configuration values from a specified INI file dynamically.
 
         :param ini_path: The filesystem path to the .ini configuration file.
         :type ini_path: Path
