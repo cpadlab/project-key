@@ -97,6 +97,8 @@ class Settings(BaseSettings):
     PASSWORD_AUDIT_INTERVAL: int = Field(default=30)
     PWNED_AUDIT_ENABLED: bool = Field(default=False)
     CLIPBOARD_CLEAR_INTERVAL: int = Field(default=20)
+    RECYCLE_BIN_RETENTION_DAYS: int = Field(default=15)
+    OTHER_SERVICES_INTERVAL: int = Field(default=60)
 
     model_config = SettingsConfigDict(
         extra="ignore",
