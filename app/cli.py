@@ -9,14 +9,13 @@ ARGUMENTS: List[Any] = [
         "flags": ['-v', '--version'],
         "action": 'version',
         "version": f'%(prog)s {settings.VERSION}',
-        "help": "Shows the current version of the programme."
+        "help": "Shows the current version of the programme"
     },
     {
         "flags": ['-l', '--log-level'],
         "dest": "log_level",
         "choices": ['debug', 'info', 'medium', 'error', 'critical'],
-        "default": 'info',
-        "help": "Set the logging verbosity level (default: %(default)s)."
+        "help": "Set the logging verbosity level"
     },
     {
         "flags": ['-f', '--file'],

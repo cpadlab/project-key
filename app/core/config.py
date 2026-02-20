@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = Field(default="info")
     FILE_PATH: Optional[str] = Field(default=None)
 
+    LOG_DIR: str = Field(default="logs")
+    LOG_FILENAME: str = Field(default="app.log")
+
     model_config = SettingsConfigDict(
         extra="ignore"
     )
