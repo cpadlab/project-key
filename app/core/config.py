@@ -6,14 +6,19 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+# Base path definitions
 _CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 _BASE_DIR = os.path.normpath(os.path.join(_CURRENT_DIR, "..", ".."))
 VERSION_FILE = os.path.join(_BASE_DIR, "VERSION")
 DEFAULT_INI_FILE = os.path.join(_BASE_DIR, "data", "config.default.ini")
 
 
-def _get_version():
+def _get_version() -> str:
     """
+    Retrieve the project version from the VERSION file.
+
+    :return: The version string if the file exists, otherwise 'unknown'.
+    :rtype: str
     """
     try:
         with open(VERSION_FILE, "r", encoding="utf-8") as f:
@@ -24,7 +29,9 @@ def _get_version():
 
 class Settings(BaseSettings):
     """
+    Global application settings.
     """
+
 
     PROJECT_NAME: str = "Project Key"
     VERSION: str = _get_version()
@@ -37,8 +44,12 @@ class Settings(BaseSettings):
     )
 
 
-    def load_from_ini(self, ini_path: Path):
+    def load_from_ini(self, ini_path: Path) -> None:
         """
+        Load configuration values from a specified INI file.
+
+        :param ini_path: The filesystem path to the .ini configuration file.
+        :type ini_path: Path
         """
         if not os.path.exists(ini_path):
             return
@@ -54,8 +65,12 @@ class Settings(BaseSettings):
                     setattr(self, field_name, val)
 
 
-    def setup_with_args(self, args):
+    def setup_with_args(self, args) -> None:
         """
+        Apply command-line arguments to the settings instance.
+
+        :param args: The parsed arguments object from argparse.
+        :type args: argparse.Namespace
         """
         args_dict = vars(args)
         for field_name in self.model_fields.keys():
@@ -63,4 +78,5 @@ class Settings(BaseSettings):
                 setattr(self, field_name, args_dict[field_name.lower()])
 
 
+# Global settings singleton
 settings = Settings()
