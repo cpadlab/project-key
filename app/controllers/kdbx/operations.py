@@ -185,7 +185,7 @@ def create_group(group_data: GroupModel) -> bool:
         if group_data.color:
             new_group.set_custom_property("color", group_data.color)
         
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.info(f"Group '{group_data.name}' created successfully.")
         return True
 
@@ -219,7 +219,7 @@ def update_group(group_name: str, data: GroupModel) -> bool:
         if data.color:
             group.set_custom_property("color", data.color)
         
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.info(f"Group '{group_name}' updated to '{data.name}'.")
         return True
 
@@ -262,7 +262,7 @@ def delete_group(group_name: str, force_delete_entries: bool = False, move_entri
 
     try:
         vault.delete_group(group)
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.info(f"Group '{group_name}' deleted successfully.")
         return True
     except Exception as e:
@@ -304,7 +304,7 @@ def add_entry(entry: EntryModel) -> bool:
         if entry.totp_seed:
             new_entry.otp = entry.totp_seed
             
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.info(f"Entry '{entry.title}' successfully added to group '{group_name}'.")
         return True
 
@@ -353,7 +353,7 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
         if data.group and data.group != entry.group.name:
             move_entry(entry_uuid, data.group)
             
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.info(f"Entry '{data.title}' (UUID: {entry_uuid}) updated successfully.")
         return True
 
@@ -394,7 +394,7 @@ def delete_entry(entry_uuid: str, permanent: bool = False) -> bool:
             move_entry(entry_uuid, RECYCLE_BIN_NAME)
             logger.info(f"Entry {entry_uuid} moved to Recycle Bin.") 
 
-        vault.save()
+        _save_vault_safely(vault=vault)
         return True
 
     except Exception as e:
@@ -426,7 +426,7 @@ def move_entry(entry_uuid: str, target_group_name: str) -> bool:
 
     try:
         vault.move_entry(entry, target_group)
-        vault.save()
+        _save_vault_safely(vault=vault)
         logger.debug(f"Entry {entry_uuid} moved to group '{target_group_name}'.")
         return True
 
