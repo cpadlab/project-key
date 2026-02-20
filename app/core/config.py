@@ -55,7 +55,7 @@ class Settings(BaseSettings):
         :type ini_path: Path
         """
         if not os.path.exists(ini_path):
-            return
+            raise FileNotFoundError(f"Mandatory configuration file not found at: {ini_path}")
 
         config = configparser.ConfigParser()
         config.read(ini_path, encoding="utf-8")
