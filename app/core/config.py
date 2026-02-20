@@ -66,10 +66,11 @@ class IniConfigSettingsSource(PydanticBaseSettingsSource):
         config = configparser.ConfigParser()
         config.read(DEFAULT_INI_FILE, encoding="utf-8")
         
-        target_fields = self.settings_cls.model_fields.keys()
+        target_fields = self.settings_cls.model_fields.items()
         for section in config.sections() + ['DEFAULT']:
-            for field_name in target_fields:
-                val = config[section].get(field_name.lower(), None)
+            for field_name, field_info in target_fields:
+                search_key = (field_info.alias or field_name).lower()
+                val = config[section].get(search_key, None)
                 if val is not None:
                     settings_dict[field_name] = val
                     
@@ -90,12 +91,16 @@ class Settings(BaseSettings):
     LOG_DIR: str = Field(default="logs")
     LOG_FILENAME: str = Field(default="app.log")
 
-    UPDATE_URL: str = Field(default="https://raw.githubusercontent.com/cpadlab/project-key/refs/heads/main/VERSION",)
-    UPDATE_TIMEOUT: int = Field(default=5,)
+    UPDATE_URL: str = Field(default="https://raw.githubusercontent.com/cpadlab/project-key/refs/heads/main/VERSION")
+    UPDATE_TIMEOUT: int = Field(default=5)
+
+    DEFAULT_WINDOW_WIDTH: int = Field(default=800, alias="width")
+    DEFAULT_WINDOW_HEIGHT: int = Field(default=600, alias="height")
 
     model_config = SettingsConfigDict(
         extra="ignore",
-        validate_assignment=True
+        validate_assignment=True,
+        populate_by_name=True
     )
 
 
