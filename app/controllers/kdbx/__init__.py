@@ -5,6 +5,9 @@ from .manager import (
 )
 from .session import VaultSession
 from .models import GroupModel, EntryModel
+from .operations import (
+    list_all_entries, list_groups, list_entries_by_group
+)
 
 __all__ = [
     "create_new_vault", 
@@ -14,5 +17,8 @@ __all__ = [
     "close_current_vault",
     "VaultSession",
     "GroupModel", 
-    "EntryModel"
+    "EntryModel",
+    "list_all_entries", 
+    "list_groups", 
+    "list_entries_by_group"
 ]
