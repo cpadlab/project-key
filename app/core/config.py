@@ -95,6 +95,7 @@ class Settings(BaseSettings):
     TEMP_DIR: str = Field(default="temp")
     HISTORY_FILENAME: str = Field(default="history.json")
     PASSWORD_AUDIT_INTERVAL: int = Field(default=30)
+    PWNED_AUDIT_ENABLED: bool = Field(default=False)
 
     model_config = SettingsConfigDict(
         extra="ignore",
