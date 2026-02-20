@@ -101,12 +101,17 @@ class Settings(BaseSettings):
     OTHER_SERVICES_INTERVAL: int = Field(default=60)
     BACKUP_DIR: str = Field(default="temp/backups")
     BACKUP_MAX_COUNT: int = Field(default=5)
-    RECYCLE_BIN_GROUP_NAME = Field(default="Recycle Bin")
-    PERSONAL_GROUP_NAME = Field(default="Personal")
+    RECYCLE_BIN_GROUP_NAME: str = Field(default="Recycle Bin")
+    PERSONAL_GROUP_NAME: str = Field(default="Personal")
     DUPLICATE_TAG: str = Field(default="duplicate", alias="duplicate")
     PWNED_TAG: str = Field(default="pwned", alias="pwned")
     WEAK_TAG: str = Field(default="weak", alias="weak")
     STATS_REFRESH_INTERVAL: int = Field(default=5)
+    EMERGENCY_FILE_NAME: str = Field(default="emergency.json")
+    EMERGENCY_DAYS_THRESHOLD: int = Field(default=180)
+    EMERGENCY_CHECK_INTERVAL: int = Field(default=86400)
+    RECOVERY_KIT_NAME: str = Field(default="recovery-kit.json")
+    EMERGENCY_PASSPHRASE: str = Field(default="DefaultEmergencyPassphrase")
 
     model_config = SettingsConfigDict(
         extra="ignore",

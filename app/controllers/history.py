@@ -5,6 +5,7 @@ from typing import List
 from app.core.config import settings
 from app.utils.logger import logger
 from app.utils.file import get_resolved_path, ensure_parent_exists
+from app.controllers.emergency import update_emergency_heartbeat
 
 
 def _get_history_path() -> Path:
@@ -65,6 +66,9 @@ def update_history(file_path: str) -> None:
     try:
         with open(_get_history_path(), "w", encoding="utf-8") as f:
             json.dump(history, f, indent=4, ensure_ascii=False)
-        logger.debug(f"History updated with: {file_path}")
+        
+        update_emergency_heartbeat()
+        logger.debug(f"History and Emergency Heartbeat updated for: {file_path}")
+
     except IOError as e:
         logger.error(f"Failed to save history file: {e}")
