@@ -9,7 +9,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 _CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 _BASE_DIR = os.path.normpath(os.path.join(_CURRENT_DIR, "..", ".."))
 VERSION_FILE = os.path.join(_BASE_DIR, "VERSION")
-DEFAULT_INI_FILE = os.path.join(_BASE_DIR, "data", "config.ini")
+DEFAULT_INI_FILE = os.path.join(_BASE_DIR, "data", "config.default.ini")
 
 
 def _get_version():
