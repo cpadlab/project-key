@@ -93,7 +93,7 @@ def list_recycle_bin_entries() -> List[EntryModel]:
     :return: A list of entries found in the Recycle Bin.
     :rtype: List[EntryModel]
     """
-    return list_entries_by_group(settings.RECYCLE_BIN_NAME)
+    return list_entries_by_group(settings.RECYCLE_BIN_GROUP_NAME)
 
 
 def find_entries(query: Optional[str] = None, group_name: Optional[str] = None, tags: Optional[List[str]] = None) -> List[EntryModel]:
@@ -388,7 +388,7 @@ def delete_entry(entry_uuid: str, permanent: bool = False) -> bool:
         else:
             timestamp = datetime.now().isoformat()
             entry.set_custom_property("deleted_at", timestamp)
-            move_entry(entry_uuid, settings.RECYCLE_BIN_NAME)
+            move_entry(entry_uuid, settings.RECYCLE_BIN_GROUP_NAME)
             logger.info(f"Entry {entry_uuid} moved to Recycle Bin.") 
 
         _save_vault_safely(vault=vault)

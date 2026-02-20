@@ -101,11 +101,11 @@ class Settings(BaseSettings):
     OTHER_SERVICES_INTERVAL: int = Field(default=60)
     BACKUP_DIR: str = Field(default="temp/backups")
     BACKUP_MAX_COUNT: int = Field(default=5)
-    RECYCLE_BIN_NAME = "Recycle Bin"
-    PERSONAL_GROUP_NAME = "Personal"
-    DUPLICATE_TAG = "duplicate"
-    PWNED_TAG = "pwned"
-    WEAK_TAG = "weak"
+    RECYCLE_BIN_GROUP_NAME = Field(default="Recycle Bin")
+    PERSONAL_GROUP_NAME = Field(default="Personal")
+    DUPLICATE_TAG: str = Field(default="duplicate", alias="duplicate")
+    PWNED_TAG: str = Field(default="pwned", alias="pwned")
+    WEAK_TAG: str = Field(default="weak", alias="weak")
 
     model_config = SettingsConfigDict(
         extra="ignore",
