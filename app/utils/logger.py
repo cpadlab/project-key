@@ -1,6 +1,6 @@
 import logging
 import sys
-import os
+from pathlib import Path
 
 from app.core.config import settings
 
@@ -28,9 +28,9 @@ def setup_logger() -> logging.Logger:
 
         logger.addHandler(console_handler)
 
-        log_file = os.path.join(settings.LOG_DIR, settings.LOG_FILENAME)
-        if not os.path.exists(settings.LOG_DIR):
-            os.makedirs(settings.LOG_DIR)
+        log_dir = Path(settings.LOG_DIR)
+        log_file = log_dir / settings.LOG_FILENAME
+        log_dir.mkdir(parents=True, exist_ok=True)
 
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setLevel(numeric_level)

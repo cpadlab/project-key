@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import configparser
 from typing import Optional
@@ -6,11 +5,11 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-# Base path definitions
-_CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-_BASE_DIR = os.path.normpath(os.path.join(_CURRENT_DIR, "..", ".."))
-VERSION_FILE = os.path.join(_BASE_DIR, "VERSION")
-DEFAULT_INI_FILE = os.path.join(_BASE_DIR, "data", "config.default.ini")
+# Base path definitions usando pathlib
+_CURRENT_DIR = Path(__file__).resolve().parent
+_BASE_DIR = _CURRENT_DIR.parent.parent
+VERSION_FILE = _BASE_DIR / "VERSION"
+DEFAULT_INI_FILE = _BASE_DIR / "data" / "config.default.ini"
 
 
 def _get_version() -> str:
@@ -21,8 +20,8 @@ def _get_version() -> str:
     :rtype: str
     """
     try:
-        with open(VERSION_FILE, "r", encoding="utf-8") as f:
-            return f.read().strip()
+        # pathlib permite leer texto directamente sin necesidad de usar el bloque 'with open()'
+        return VERSION_FILE.read_text(encoding="utf-8").strip()
     except FileNotFoundError:
         return "unknown"
 
@@ -54,7 +53,7 @@ class Settings(BaseSettings):
         :param ini_path: The filesystem path to the .ini configuration file.
         :type ini_path: Path
         """
-        if not os.path.exists(ini_path):
+        if not ini_path.exists():
             raise FileNotFoundError(f"Mandatory configuration file not found at: {ini_path}")
 
         config = configparser.ConfigParser()
