@@ -21,6 +21,7 @@ class EntryModel(BaseModel):
     is_favorite: bool = False
     totp_seed: Optional[str] = None
     auto_fill_config: Optional[Dict[str, Any]] = None
+    deleted_at: Optional[str] = None
 
 
     @classmethod
@@ -42,7 +43,8 @@ class EntryModel(BaseModel):
             tags=kp_entry.tags or [],
             is_favorite=custom.get("is_favorite") == "True",
             totp_seed=kp_entry.otp,
-            auto_fill_config=None
+            auto_fill_config=None,
+            deleted_at=custom.get("deleted_at"),
         )
 
 

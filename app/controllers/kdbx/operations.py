@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import List, Optional
 from pykeepass.group import Group
 
@@ -8,6 +9,9 @@ from app.controllers.kdbx.models import EntryModel, GroupModel
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
+
+RECYCLE_BIN_NAME = "Recycle Bin"
+PERSONAL_GROUP_NAME = "Personal"
 
 
 def list_all_entries() -> List[EntryModel]:
@@ -67,6 +71,16 @@ def list_entries_by_group(group_name: str) -> List[EntryModel]:
 
     logger.debug(f"Fetching entries for group: {group_name}")
     return [EntryModel.from_pykeepass(e) for e in group.entries]
+
+
+def list_recycle_bin_entries() -> List[EntryModel]:
+    """
+    Retrieve all entries currently residing in the Recycle Bin group.
+
+    :return: A list of entries found in the Recycle Bin.
+    :rtype: List[EntryModel]
+    """
+    return list_entries_by_group(RECYCLE_BIN_NAME)
 
 
 def find_entries(query: Optional[str] = None, group_name: Optional[str] = None, tags: Optional[List[str]] = None) -> List[EntryModel]:
@@ -198,7 +212,7 @@ def update_group(group_name: str, data: GroupModel) -> bool:
         return False
 
 
-def delete_group(group_name: str, force_delete_entries: bool = False, move_entries_to: Optional[str] = "Personal") -> bool:
+def delete_group(group_name: str, force_delete_entries: bool = False, move_entries_to: Optional[str] = PERSONAL_GROUP_NAME) -> bool:
     """
     Delete a group with safety checks for contained entries.
 
@@ -254,7 +268,7 @@ def add_entry(entry: EntryModel) -> bool:
         logger.warning("Attempted to add entry but no vault session is active.")
         return False
 
-    group_name = entry.group if entry.group and entry.group != "Root" else "Personal"
+    group_name = entry.group if entry.group and entry.group != "Root" else PERSONAL_GROUP_NAME
     target_group = get_group(group_name)
     
     if not target_group:
@@ -332,13 +346,17 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
         return False
 
 
-def delete_entry(entry_uuid: str) -> bool:
+def delete_entry(entry_uuid: str, permanent: bool = False) -> bool:
     """
-    Permanently remove an entry from the vault using its unique identifier.
+    Remove an entry from the vault, either logically or permanently.
 
-    :param entry_uuid: The UUID of the entry to be deleted.
+
+    :param entry_uuid: The unique identifier (UUID) of the entry to delete.
     :type entry_uuid: str
-    :return: True if the entry was found and deleted, False otherwise.
+    :param permanent: If True, deletes the entry permanently. If False, 
+                      moves it to the Recycle Bin. Defaults to False.
+    :type permanent: bool
+    :return: True if the operation was successful and the vault saved, False otherwise.
     :rtype: bool
     """
     vault = get_active_vault()
@@ -351,9 +369,16 @@ def delete_entry(entry_uuid: str) -> bool:
         return False
 
     try:
-        vault.delete_entry(entry)
+        if permanent:
+            vault.delete_entry(entry)
+            logger.info(f"Entry {entry_uuid} permanently deleted.")
+        else:
+            timestamp = datetime.now().isoformat()
+            entry.set_custom_property("deleted_at", timestamp)
+            move_entry(entry_uuid, RECYCLE_BIN_NAME)
+            logger.info(f"Entry {entry_uuid} moved to Recycle Bin.") 
+
         vault.save()
-        logger.info(f"Entry {entry_uuid} successfully deleted from the vault.")
         return True
 
     except Exception as e:
