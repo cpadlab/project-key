@@ -1,4 +1,5 @@
 import configparser
+import argparse
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Type
 from pydantic import Field
@@ -89,6 +90,9 @@ class Settings(BaseSettings):
     LOG_DIR: str = Field(default="logs")
     LOG_FILENAME: str = Field(default="app.log")
 
+    UPDATE_URL: str = Field(default="https://raw.githubusercontent.com/cpadlab/project-key/refs/heads/main/VERSION",)
+    UPDATE_TIMEOUT: int = Field(default=5,)
+
     model_config = SettingsConfigDict(
         extra="ignore",
         validate_assignment=True
@@ -132,7 +136,7 @@ class Settings(BaseSettings):
                     setattr(self, field_name, val)
 
 
-    def setup_with_args(self, args) -> None:
+    def setup_with_args(self, args: argparse.Namespace) -> None:
         """
         Apply command-line arguments to the settings instance.
 

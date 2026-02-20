@@ -4,6 +4,7 @@ from pathlib import Path
 from app.utils.logger import logger, update_logger_level
 from app.utils.cli import get_args
 from app.core.config import settings
+from app.controllers.updater import check_for_updates
 
 
 def main(arguments: argparse.Namespace):
@@ -22,6 +23,8 @@ def main(arguments: argparse.Namespace):
         logger.info(f"Database file: {settings.FILE_PATH}")
     else:
         logger.info("No database file specified")
+
+    check_for_updates()
 
 
 if __name__ == "__main__":

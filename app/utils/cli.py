@@ -1,10 +1,10 @@
 import argparse
-from typing import List, Any
+from typing import List, Any, Dict
 
 from app.core.config import settings, DEFAULT_INI_FILE
 
 
-ARGUMENTS: List[Any] = [
+ARGUMENTS: List[Dict[str, Any]] = [
     {
         "flags": ['-v', '--version'],
         "action": 'version',
