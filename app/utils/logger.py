@@ -40,4 +40,15 @@ def setup_logger() -> logging.Logger:
     return logger
 
 
+def update_logger_level() -> None:
+    """
+    Updates the logger and all its handlers to the current 
+    LOG_LEVEL defined in settings.
+    """
+    numeric_level = getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO)
+    logger.setLevel(numeric_level)
+    for handler in logger.handlers:
+        handler.setLevel(numeric_level)
+
+
 logger = setup_logger()
