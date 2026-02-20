@@ -1,14 +1,14 @@
 import argparse
 from typing import List, Any
 
-from app._version import _VERSION
+from app.core.config import settings, DEFAULT_INI_FILE
 
 
 ARGUMENTS: List[Any] = [
     {
         "flags": ['-v', '--version'],
         "action": 'version',
-        "version": f'%(prog)s {_VERSION}',
+        "version": f'%(prog)s {settings.VERSION}',
         "help": "Shows the current version of the programme."
     },
     {
@@ -23,7 +23,13 @@ ARGUMENTS: List[Any] = [
         "type": str,
         "metavar": "PATH",
         "help": "Path to the password database file"
-    }
+    },
+    {
+        "flags": ['-c', '--config'],
+        "dest": "config_file",
+        "default": DEFAULT_INI_FILE,
+        "help": f"Path to the configuration file (default: {DEFAULT_INI_FILE})"
+    },
 ]
 
 
@@ -35,11 +41,12 @@ def get_args() -> argparse.Namespace:
     :rtype: argparse.Namespace
     """
     parser = argparse.ArgumentParser(
-        prog="Project Key"
+        prog=settings.PROJECT_NAME
     )
 
     for argument in ARGUMENTS:
-        flags = argument.pop("flags") 
-        parser.add_argument(*flags, **argument)
+        argument_config = argument.copy()
+        flags = argument_config.pop("flags") 
+        parser.add_argument(*flags, **argument_config)
     
     return parser.parse_args()
