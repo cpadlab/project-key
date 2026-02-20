@@ -238,3 +238,157 @@ def delete_group(group_name: str, force_delete_entries: bool = False, move_entri
     except Exception as e:
         logger.error(f"Error deleting group: {e}")
         return False
+
+
+def add_entry(entry: EntryModel) -> bool:
+    """
+    Register a new entry in the vault with automatic group resolution.
+
+    :param entry: The data model containing all entry information.
+    :type entry: EntryModel
+    :return: True if the entry was added and the vault saved successfully, False otherwise.
+    :rtype: bool
+    """
+    vault = get_active_vault()
+    if not vault:
+        logger.warning("Attempted to add entry but no vault session is active.")
+        return False
+
+    group_name = entry.group if entry.group and entry.group != "Root" else "Personal"
+    target_group = get_group(group_name)
+    
+    if not target_group:
+        logger.info(f"Creating missing group: {group_name}")
+        target_group = vault.add_group(vault.root_group, group_name)
+
+    try:
+        new_entry = vault.add_entry(
+            target_group, entry.title, entry.username, entry.password, 
+            url=entry.url, notes=entry.notes, tags=entry.tags, icon=entry.icon
+        )
+        
+        if entry.color:
+            new_entry.set_custom_property("color", entry.color)
+        new_entry.set_custom_property("is_favorite", str(entry.is_favorite))
+        
+        if entry.totp_seed:
+            new_entry.otp = entry.totp_seed
+            
+        vault.save()
+        logger.info(f"Entry '{entry.title}' successfully added to group '{group_name}'.")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to add entry '{entry.title}': {e}")
+        return False
+
+
+def update_entry(entry_uuid: str, data: EntryModel) -> bool:
+    """
+    Update an existing database entry identified by its UUID.
+
+    This function synchronizes standard KDBX fields and custom Project Key 
+    attributes. If the group name in the provided data differs from the 
+    current one, the entry is automatically moved to the new group.
+
+    :param entry_uuid: The unique identifier of the entry to update.
+    :type entry_uuid: str
+    :param data: The new data model to apply.
+    :type data: EntryModel
+    :return: True if the update was successful, False otherwise.
+    :rtype: bool
+    """
+    vault = get_active_vault()
+    if not vault:
+        return False
+
+    entry = vault.find_entries(uuid=entry_uuid, first=True)
+    if not entry:
+        logger.error(f"Update failed: Entry with UUID {entry_uuid} not found.")
+        return False
+
+    try:
+        entry.title = data.title
+        entry.username = data.username
+        entry.password = data.password
+        entry.url = data.url
+        entry.notes = data.notes
+        entry.tags = data.tags
+        entry.icon = data.icon
+        entry.otp = data.totp_seed
+        
+        entry.set_custom_property("color", data.color)
+        entry.set_custom_property("is_favorite", str(data.is_favorite))
+        
+        if data.group and data.group != entry.group.name:
+            move_entry(entry_uuid, data.group)
+            
+        vault.save()
+        logger.info(f"Entry '{data.title}' (UUID: {entry_uuid}) updated successfully.")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to update entry {entry_uuid}: {e}")
+        return False
+
+
+def delete_entry(entry_uuid: str) -> bool:
+    """
+    Permanently remove an entry from the vault using its unique identifier.
+
+    :param entry_uuid: The UUID of the entry to be deleted.
+    :type entry_uuid: str
+    :return: True if the entry was found and deleted, False otherwise.
+    :rtype: bool
+    """
+    vault = get_active_vault()
+    if not vault:
+        return False
+
+    entry = vault.find_entries(uuid=entry_uuid, first=True)
+    if not entry:
+        logger.warning(f"Delete aborted: No entry found with UUID {entry_uuid}.")
+        return False
+
+    try:
+        vault.delete_entry(entry)
+        vault.save()
+        logger.info(f"Entry {entry_uuid} successfully deleted from the vault.")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to delete entry {entry_uuid}: {e}")
+        return False
+
+
+def move_entry(entry_uuid: str, target_group_name: str) -> bool:
+    """
+    Relocate an entry to a different group within the vault.
+
+    :param entry_uuid: The unique identifier of the entry to move.
+    :type entry_uuid: str
+    :param target_group_name: The destination group name.
+    :type target_group_name: str
+    :return: True if the move was successful, False otherwise.
+    :rtype: bool
+    """
+    vault = get_active_vault()
+    if not vault:
+        return False
+
+    entry = vault.find_entries(uuid=entry_uuid, first=True)
+    if not entry:
+        logger.error(f"Move failed: Entry {entry_uuid} not found.")
+        return False
+        
+    target_group = get_group(target_group_name) or vault.add_group(vault.root_group, target_group_name)
+
+    try:
+        vault.move_entry(entry, target_group)
+        vault.save()
+        logger.debug(f"Entry {entry_uuid} moved to group '{target_group_name}'.")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to move entry {entry_uuid} to '{target_group_name}': {e}")
+        return False

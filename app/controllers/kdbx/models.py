@@ -8,6 +8,7 @@ class EntryModel(BaseModel):
     """
     Pydantic model representing a KDBX database entry.
     """
+    uuid: Optional[str] = None
     title: str = Field(..., min_length=1)
     username: Optional[str] = None
     password: str
@@ -21,19 +22,15 @@ class EntryModel(BaseModel):
     totp_seed: Optional[str] = None
     auto_fill_config: Optional[Dict[str, Any]] = None
 
+
     @classmethod
     def from_pykeepass(cls, kp_entry: Entry) -> "EntryModel":
         """
         Create an EntryModel instance from a pykeepass Entry object.
-
-        :param kp_entry: The native pykeepass Entry instance.
-        :type kp_entry: Entry
-        :return: A validated EntryModel instance.
-        :rtype: EntryModel
         """
         custom = kp_entry.custom_properties
-        
         return cls(
+            uuid=str(kp_entry.uuid),
             title=kp_entry.title or "Untitled",
             username=kp_entry.username,
             password=kp_entry.password,
@@ -57,15 +54,11 @@ class GroupModel(BaseModel):
     icon: Optional[int] = None
     color: Optional[str] = None
 
+
     @classmethod
     def from_pykeepass(cls, kp_group: Group) -> "GroupModel":
         """
         Create a GroupModel instance from a pykeepass Group object.
-
-        :param kp_group: The native pykeepass Group instance.
-        :type kp_group: Group
-        :return: A validated GroupModel instance.
-        :rtype: GroupModel
         """
         custom = kp_group.custom_properties
         return cls(
