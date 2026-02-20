@@ -11,6 +11,25 @@ class IconManager:
     """
 
 
+    def load_svg_asset(filename: str) -> str:
+        """
+        Read an SVG file from the application's assets directory.
+
+        :param filename: The name of the SVG file (e.g., 'open-folder.svg').
+        :type filename: str
+        :return: The raw string content of the SVG file, or an empty string if not found.
+        :rtype: str
+        """
+        current_dir = Path(__file__).resolve().parent
+        svg_path = current_dir.parent / "assets" / "icons" / filename
+        
+        try:
+            return svg_path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            logger.error(f"Failed to load SVG icon: File not found at {svg_path}")
+            return ""
+
+
     @staticmethod
     def get_svg_icon(svg_content: str, color: str, size: int = 24) -> QIcon:
         """
