@@ -3,6 +3,7 @@ import logging
 
 from app.core.config import settings
 from .find_duplicates import duplicate_password_audit_task
+from .weak_passwords import weak_password_audit_task
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
@@ -17,12 +18,19 @@ def start_password_security_audits() -> None:
     """
     logger.info("Launching password security audit services...")
 
-    dup_audit_thread = threading.Thread(
+    dup_thread = threading.Thread(
         target=duplicate_password_audit_task, 
         daemon=True,
         name="DuplicatePasswordAudit"
     )
-    dup_audit_thread.start()
+    dup_thread.start()
+
+    weak_thread = threading.Thread(
+        target=weak_password_audit_task,
+        daemon=True,
+        name="WeakPasswordAudit"
+    )
+    weak_thread.start()
 
     # NOTE: Future audits (weak passwords, pwned check) will be started here
     # following the same pattern.
