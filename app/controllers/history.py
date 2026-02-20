@@ -72,3 +72,27 @@ def update_history(file_path: str) -> None:
 
     except IOError as e:
         logger.error(f"Failed to save history file: {e}")
+
+
+def clear_history() -> bool:
+    """
+    Delete the history file from the filesystem.
+
+    :return: True if the file was deleted or didn't exist, False if an error occurred.
+    :rtype: bool
+    """
+    history_file = _get_history_path()
+    
+    try:
+        if history_file.exists():
+            history_file.unlink()
+            logger.info("History file deleted successfully.")
+        else:
+            logger.debug("Clear history called, but file does not exist.")
+        
+        update_emergency_heartbeat()
+        return True
+
+    except OSError as e:
+        logger.error(f"Failed to delete history file: {e}")
+        return False
