@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from PyQt6.QtGui import QIcon, QPixmap, QImage, QPainter
 from PyQt6.QtCore import Qt, QByteArray
 from PyQt6.QtSvg import QSvgRenderer
+from pathlib import Path
 
 
 class IconManager:
