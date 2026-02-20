@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from app.gui.windows.main import MainWindow
 from app.utils.logger import logger
 from app.controllers.updater import check_for_updates
+from app.services.main import start_background_services
 
 
 class GUIManager:
@@ -34,5 +35,8 @@ class GUIManager:
 
         update_thread = threading.Thread(target=check_for_updates, daemon=True)
         update_thread.start()
+
+        services_thread = threading.Thread(target=start_background_services, daemon=True)
+        services_thread.start()
 
         sys.exit(self.app.exec())
