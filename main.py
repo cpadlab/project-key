@@ -43,8 +43,6 @@ def main(arguments: argparse.Namespace) -> None:
         else:
             logger.info("No database file specified")
 
-        check_for_updates()
-
         gui = GUIManager()
         gui.run()
 

@@ -1,8 +1,10 @@
+import threading
 import sys
 from PyQt6.QtWidgets import QApplication
 
 from app.gui.windows.main import MainWindow
 from app.utils.logger import logger
+from app.controllers.updater import check_for_updates
 
 
 class GUIManager:
@@ -29,4 +31,8 @@ class GUIManager:
         """
         logger.info("Starting the graphical interface...")
         self.main_window.show()
+
+        update_thread = threading.Thread(target=check_for_updates, daemon=True)
+        update_thread.start()
+
         sys.exit(self.app.exec())
