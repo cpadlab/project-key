@@ -66,3 +66,49 @@ def list_entries_by_group(group_name: str) -> List[EntryModel]:
 
     logger.debug(f"Fetching entries for group: {group_name}")
     return [EntryModel.from_pykeepass(e) for e in group.entries]
+
+
+def find_entries(query: Optional[str] = None, group_name: Optional[str] = None, tags: Optional[List[str]] = None) -> List[EntryModel]:
+    """
+    Search for entries within the vault using flexible filtering criteria.
+
+    :param query: Search string to match against title, username, URL, or notes.
+    :type query: Optional[str]
+    :param group_name: Optional name of the group to restrict the search.
+    :type group_name: Optional[str]
+    :param tags: Optional list of tags that entries must include.
+    :type tags: Optional[List[str]]
+    :return: A list of EntryModel instances matching the criteria.
+    :rtype: List[EntryModel]
+    """
+    vault = get_active_vault()
+    if not vault:
+        logger.warning("Attempted to search entries but no vault session is active.")
+        return []
+
+    search_params = {}
+    
+    if group_name:
+        target_group = vault.find_groups(name=group_name, first=True)
+        if not target_group:
+            logger.error(f"Search aborted: Group '{group_name}' does not exist.")
+            return []
+        search_params['group'] = target_group
+
+    if tags:
+        search_params['tags'] = tags
+
+    entries = vault.find_entries(**search_params)
+
+    if query:
+        q = query.lower()
+        entries = [
+            e for e in entries 
+            if (e.title and q in e.title.lower()) or 
+               (e.username and q in e.username.lower()) or 
+               (e.url and q in e.url.lower()) or 
+               (e.notes and q in e.notes.lower())
+        ]
+
+    logger.debug(f"Search completed: {len(entries)} entries found.")
+    return [EntryModel.from_pykeepass(e) for e in entries]

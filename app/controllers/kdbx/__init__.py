@@ -6,7 +6,8 @@ from .manager import (
 from .session import VaultSession
 from .models import GroupModel, EntryModel
 from .operations import (
-    list_all_entries, list_groups, list_entries_by_group
+    list_all_entries, list_groups, list_entries_by_group,
+    find_entries
 )
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     "EntryModel",
     "list_all_entries", 
     "list_groups", 
-    "list_entries_by_group"
+    "list_entries_by_group",
+    "find_entries"
 ]
