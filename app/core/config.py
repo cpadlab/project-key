@@ -99,6 +99,8 @@ class Settings(BaseSettings):
     CLIPBOARD_CLEAR_INTERVAL: int = Field(default=20)
     RECYCLE_BIN_RETENTION_DAYS: int = Field(default=15)
     OTHER_SERVICES_INTERVAL: int = Field(default=60)
+    BACKUP_DIR: str = Field(default="temp/backups")
+    BACKUP_MAX_COUNT: int = Field(default=5)
 
     model_config = SettingsConfigDict(
         extra="ignore",

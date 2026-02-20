@@ -2,16 +2,32 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 from pykeepass.group import Group
+from pykeepass import PyKeePass
 
 from app.core.config import settings
 from app.controllers.kdbx.manager import get_active_vault
 from app.controllers.kdbx.models import EntryModel, GroupModel
+from app.controllers.kdbx.backups import execute_backup_rotation
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
 
 RECYCLE_BIN_NAME = "Recycle Bin"
 PERSONAL_GROUP_NAME = "Personal"
+
+
+def _save_vault_safely(vault: PyKeePass) -> None:
+    """
+    Helper utility to perform automated backup rotation before persisting changes.
+
+    :param vault: The active PyKeePass instance to be saved.
+    :type vault: PyKeePass
+    :return: None
+    :rtype: None
+    """
+    if settings.FILE_PATH:
+        execute_backup_rotation(settings.FILE_PATH)
+    vault.save()
 
 
 def list_all_entries() -> List[EntryModel]:
