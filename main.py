@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 from app.utils.logger import logger
 
-from app.cli import get_args
+from app.utils.cli import get_args
 from app.core.config import settings
 
 
