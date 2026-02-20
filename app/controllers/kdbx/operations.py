@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Literal
 from pykeepass.group import Group
 from pykeepass import PyKeePass
 
@@ -27,6 +27,60 @@ def _save_vault_safely(vault: PyKeePass) -> None:
     vault.save()
 
 
+def sort_entries(
+    entries: List[EntryModel], sort_by: Literal["title", "created_at", "updated_at"] = "title", reverse: bool = False
+) -> List[EntryModel]:
+    """
+    Sort a list of EntryModel objects based on a specific attribute.
+
+    :param entries: The list of entries to sort.
+    :type entries: List[EntryModel]
+    :param sort_by: The field to sort by ('title', 'created_at', 'updated_at').
+    :type sort_by: str
+    :param reverse: If True, sorts in descending order (e.g., Z-A or newest first).
+    :type reverse: bool
+    :return: A sorted list of EntryModel instances.
+    :rtype: List[EntryModel]
+    """
+    valid_fields = ["title", "created_at", "updated_at"]
+    if sort_by not in valid_fields:
+        logger.error(f"Invalid entry sort field: '{sort_by}'. Use one of {valid_fields}")
+        return entries
+
+    return sorted(
+        entries, 
+        key=lambda x: (getattr(x, sort_by) or ""), 
+        reverse=reverse
+    )
+
+
+def sort_groups(
+    groups: List[GroupModel], sort_by: Literal["name", "created_at", "updated_at"] = "name", reverse: bool = False
+) -> List[GroupModel]:
+    """
+    Sort a list of GroupModel objects based on name or metadata timestamps.
+
+    :param groups: The list of groups to sort.
+    :type groups: List[GroupModel]
+    :param sort_by: The field to sort by ('name', 'created_at', 'updated_at').
+    :type sort_by: str
+    :param reverse: If True, sorts in descending order.
+    :type reverse: bool
+    :return: A sorted list of GroupModel instances.
+    :rtype: List[GroupModel]
+    """
+    valid_fields = ["name", "created_at", "updated_at"]
+    if sort_by not in valid_fields:
+        logger.error(f"Invalid group sort field: '{sort_by}'. Use one of {valid_fields}")
+        return groups
+
+    return sorted(
+        groups, 
+        key=lambda x: (getattr(x, sort_by) or ""), 
+        reverse=reverse
+    )
+
+
 def list_all_entries() -> List[EntryModel]:
     """
     Retrieve every single entry stored in the KDBX file, regardless of its group.
@@ -40,7 +94,8 @@ def list_all_entries() -> List[EntryModel]:
         return []
 
     logger.debug("Fetching all entries from the active vault...")
-    return [EntryModel.from_pykeepass(e) for e in vault.entries]
+    entries = [EntryModel.from_pykeepass(e) for e in vault.entries]
+    return sort_entries(entries)
 
 
 def list_groups() -> List[GroupModel]:
@@ -56,11 +111,12 @@ def list_groups() -> List[GroupModel]:
         return []
 
     logger.debug("Fetching flat group list from the vault...")
-    return [
+    groups = [
         GroupModel.from_pykeepass(g) 
         for g in vault.groups 
         if g.name != "Root"
     ]
+    return sort_groups(groups)
 
 
 def list_entries_by_group(group_name: str) -> List[EntryModel]:
@@ -83,7 +139,8 @@ def list_entries_by_group(group_name: str) -> List[EntryModel]:
         return []
 
     logger.debug(f"Fetching entries for group: {group_name}")
-    return [EntryModel.from_pykeepass(e) for e in group.entries]
+    entries = [EntryModel.from_pykeepass(e) for e in group.entries]
+    return sort_entries(entries)
 
 
 def list_recycle_bin_entries() -> List[EntryModel]:
