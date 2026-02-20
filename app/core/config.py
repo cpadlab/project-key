@@ -106,6 +106,7 @@ class Settings(BaseSettings):
     DUPLICATE_TAG: str = Field(default="duplicate", alias="duplicate")
     PWNED_TAG: str = Field(default="pwned", alias="pwned")
     WEAK_TAG: str = Field(default="weak", alias="weak")
+    STATS_REFRESH_INTERVAL: int = Field(default=5)
 
     model_config = SettingsConfigDict(
         extra="ignore",

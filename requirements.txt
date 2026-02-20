@@ -6,3 +6,4 @@ pyzbar==0.1.9
 pillow==12.1.1
 pyperclip==1.11.0
 pandas==3.0.1
+matplotlib==3.10.8
