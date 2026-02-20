@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from pykeepass.entry import Entry
 from pykeepass.group import Group
+from datetime import datetime
 
 
 class EntryModel(BaseModel):
@@ -22,6 +23,8 @@ class EntryModel(BaseModel):
     totp_seed: Optional[str] = None
     auto_fill_config: Optional[Dict[str, Any]] = None
     deleted_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
     @classmethod
@@ -45,6 +48,8 @@ class EntryModel(BaseModel):
             totp_seed=kp_entry.otp,
             auto_fill_config=None,
             deleted_at=custom.get("deleted_at"),
+            created_at=kp_entry.ctime,
+            updated_at=kp_entry.mtime,
         )
 
 
