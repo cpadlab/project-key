@@ -3,7 +3,7 @@ import base64
 import logging
 from pathlib import Path
 from typing import Optional
-from pykeepass import PyKeePass
+from pykeepass import PyKeePass, create_database
 from pykeepass.exceptions import CredentialsError
 
 from app.core.config import settings
@@ -55,7 +55,7 @@ def create_new_vault(path: str, password: str, keyfile: Optional[str] = None) ->
 
     try:
         logger.info(f"Initializing new vault creation at: {output_path}")
-        kp = PyKeePass(filename=str(output_path), password=password, keyfile=keyfile)
+        kp = create_database(filename=str(output_path), password=password, keyfile=keyfile)
 
         kp.save()
         _register_active_vault(str(output_path), kp)

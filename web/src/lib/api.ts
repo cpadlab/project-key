@@ -36,4 +36,19 @@ export const backendAPI = {
         return await api.clear_history()
     },
 
+    selectSaveLocation: async (filename: string, ext: string): Promise<string | null> => {
+        const api = await getPywebviewApi()
+        return await api.save_file_dialog(filename, ext)
+    },
+    
+    createNewVault: async (path: string, password: string, keyfile: string | null = null): Promise<boolean> => {
+        const api = await getPywebviewApi()
+        return await api.create_vault(path, password, keyfile)
+    },
+    
+    generateKeyfile: async (path: string): Promise<string | null> => {
+        const api = await getPywebviewApi()
+        return await api.generate_keyfile(path)
+    }
+
 }

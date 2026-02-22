@@ -6,19 +6,28 @@ import { EyeIcon, EyeOffIcon, SaveIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
-import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
+import { Field, FieldLabel, FieldError, FieldDescription, FieldContent } from "@/components/ui/field"
+import { Switch } from "@/components/ui/switch"
 
+import { backendAPI as backend } from "@/lib/api"
 
 const formSchema = z.object({
+    filename: z
+        .string()
+        .min(1, "A name for the vault is required.")
+        .max(50, "The name is too long.")
+        .regex(/^[a-zA-Z0-9_\-\s]+$/, "Only letters, numbers, spaces, hyphens, and underscores are allowed."),
     password: z
         .string()
         .min(8, "The password must be at least 8 characters long."),
     confirmPassword: z
-        .string()
+        .string(),
+    useKeyfile: z
+        .boolean(),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
-    path: ["confirmPassword"],
+    path: ["confirmPassword"], 
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -35,19 +44,51 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            filename: "",
             password: "",
             confirmPassword: "",
+            useKeyfile: false,
         },
     })
 
     const onSubmit = async (data: FormData) => {
         try {
-            console.log("Master Password valid:", data.password)
-            toast.success("Vault created successfully!")
-            form.reset()
-            setOpen(false)
+            
+            const kdbxPath = await backend.selectSaveLocation(
+                `${data.filename}.kdbx`, 
+                "KeePass Database (*.kdbx)"
+            )
+            
+            if (!kdbxPath) return; 
+            let keyfilePath = null;
+
+            if (data.useKeyfile) {
+                const keyPath = await backend.selectSaveLocation(
+                    `${data.filename}.key`, 
+                    "KeePass Keyfile (*.key)"
+                )
+                if (!keyPath) return;
+                keyfilePath = await backend.generateKeyfile(keyPath)
+                if (!keyfilePath) {
+                    toast.error("Failed to generate the keyfile.")
+                    return
+                }
+            }
+
+            const success = await backend.createNewVault(kdbxPath, data.password, keyfilePath)
+            
+            if (success) {
+                toast.success("Vault created successfully!")
+                form.reset()
+                setOpen(false)
+                /* navigate("/dashboard")  */
+            } else {
+                toast.error("Failed to create the vault. Check console for details.")
+            }
+
         } catch (error) {
-            toast.error("Error creating the vault.")
+            console.error("Connection error:", error)
+            toast.error("An unexpected error occurred.")
         }
     }
 
@@ -74,7 +115,22 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
+
+                    <Controller name="filename" control={form.control} render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor="filename">Vault Name</FieldLabel>
+                                <InputGroup>
+                                    <InputGroupInput {...field} id="filename" placeholder="MyPersonalVault" aria-invalid={fieldState.invalid}/>
+                                    <InputGroupAddon align="inline-end">
+                                        <InputGroupText>.kdbx</InputGroupText>
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <FieldDescription>The name for your new database file.</FieldDescription>
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
                     
                     <Controller name="password" control={form.control} render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
@@ -100,6 +156,18 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
                                     <InputGroupInput {...field} id="confirmPassword" type={showPassword ? "text" : "password"} placeholder="Repeat your password" aria-invalid={fieldState.invalid} />
                                 </InputGroup>
                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
+
+                    <Controller name="useKeyfile" control={form.control} render={({ field, fieldState }) => (
+                            <Field orientation="horizontal" data-invalid={fieldState.invalid} className="mt-2 border rounded-lg p-3">
+                                <FieldContent>
+                                    <FieldLabel htmlFor="useKeyfile">Generate Keyfile</FieldLabel>
+                                    <FieldDescription>Adds an extra layer of security. You will need both the password and this file to unlock the vault.</FieldDescription>
+                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                </FieldContent>
+                                <Switch id="useKeyfile" name={field.name} checked={field.value} onCheckedChange={field.onChange} aria-invalid={fieldState.invalid}/>
                             </Field>
                         )}
                     />
