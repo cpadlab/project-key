@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { backendAPI as backend } from "@/lib/api"
+import { CreateNewVaultDialog } from "@/components/blocks/forms/create-new-vault"
 
 type HistoryItem = {
     raw: string;
@@ -46,10 +47,12 @@ export const VaultSelector = () => {
     return (
         <div className="flex items-center gap-2 absolute left-2 top-2">
 
-            <Button size="sm" variant="default" className="cursor-pointer">
-                <PlusIcon />
-                <span>New vault</span>
-            </Button>
+            <CreateNewVaultDialog>
+                <Button size="sm" variant="default" className="cursor-pointer">
+                    <PlusIcon />
+                    <span>New vault</span>
+                </Button>
+            </CreateNewVaultDialog>
 
             <ButtonGroup>
 

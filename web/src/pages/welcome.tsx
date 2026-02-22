@@ -4,6 +4,7 @@ import { FolderOpenIcon, PlusIcon } from "lucide-react"
 import { ToggleThemeSelector } from "@/components/blocks/toggle-theme-selector"
 import { VaultSelector } from "@/components/blocks/vault-selector"
 import { VersionBadge } from "@/components/blocks/version-badge"
+import { CreateNewVaultDialog } from "@/components/blocks/forms/create-new-vault"
 
 const WelcomePage = () => {
     return (
@@ -19,10 +20,12 @@ const WelcomePage = () => {
                         <span>Open Vault</span>
                         <FolderOpenIcon />
                     </Button>
-                    <Button variant="secondary">
-                        Create New Vault
-                        <PlusIcon />
-                    </Button>
+                    <CreateNewVaultDialog>
+                        <Button variant="secondary">
+                            Create New Vault
+                            <PlusIcon />
+                        </Button>
+                    </CreateNewVaultDialog>
                 </div>
             </div>
 
