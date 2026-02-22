@@ -90,8 +90,8 @@ class Settings(BaseSettings):
     LOG_FILENAME: str = Field(default="app.log")
     UPDATE_URL: str = Field(default="https://raw.githubusercontent.com/cpadlab/project-key/refs/heads/main/VERSION")
     UPDATE_TIMEOUT: int = Field(default=5)
-    DEFAULT_WINDOW_WIDTH: int = Field(default=800, alias="width")
-    DEFAULT_WINDOW_HEIGHT: int = Field(default=600, alias="height")
+    DEFAULT_WINDOW_WIDTH: int = Field(default=800, alias="default_width")
+    DEFAULT_WINDOW_HEIGHT: int = Field(default=600, alias="default_height")
     TEMP_DIR: str = Field(default="temp")
     HISTORY_FILENAME: str = Field(default="history.json")
     PASSWORD_AUDIT_INTERVAL: int = Field(default=30)
@@ -112,6 +112,10 @@ class Settings(BaseSettings):
     EMERGENCY_CHECK_INTERVAL: int = Field(default=86400)
     RECOVERY_KIT_NAME: str = Field(default="recovery-kit.json")
     EMERGENCY_PASSPHRASE: str = Field(default="DefaultEmergencyPassphrase")
+    MIN_WINDOW_HEIGHT: int = Field(default=500)
+    MIN_WINDOW_WIDTH: int = Field(default=400)
+    DEV_TOOLS: bool = Field(default=False)
+    ENTRY_URL: str = Field(default="build/index.html")
 
     model_config = SettingsConfigDict(
         extra="ignore",
