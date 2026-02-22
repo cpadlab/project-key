@@ -7,3 +7,4 @@ pyperclip==1.11.0
 pandas==3.0.1
 matplotlib==3.10.8
 cryptography==46.0.5
+webview==0.1.5
