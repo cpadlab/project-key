@@ -11,6 +11,7 @@ import { Field, FieldLabel, FieldError, FieldDescription, FieldContent } from "@
 import { Switch } from "@/components/ui/switch"
 
 import { backendAPI as backend } from "@/lib/api"
+import { useNavigate } from "react-router-dom"
 
 const formSchema = z.object({
     filename: z
@@ -40,6 +41,8 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
     
     const [open, setOpen] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+
+    const navigate = useNavigate()
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -81,7 +84,7 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
                 toast.success("Vault created successfully!")
                 form.reset()
                 setOpen(false)
-                /* navigate("/dashboard")  */
+                navigate("/dashboard")
             } else {
                 toast.error("Failed to create the vault. Check console for details.")
             }
