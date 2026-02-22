@@ -2,8 +2,31 @@ import { ChevronDownIcon, PlusIcon, Trash2Icon } from "lucide-react"
 import { ButtonGroup } from "../ui/button-group"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { useEffect, useState } from "react"
+
+import { backendAPI as backend } from "@/lib/api"
+
+type HistoryItem = {
+    raw: string;
+    display: string;
+}
 
 export const VaultSelector = () => {
+
+    const [history, setHistory] = useState<HistoryItem[]>([])
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const historyData = await backend.getHistory()
+                setHistory(historyData)
+            } catch (error) {
+                console.error("Error al obtener el historial de bóvedas:", error)
+            }
+        }
+        fetchHistory()
+    }, [])
+    
     return (
         <div className="flex items-center gap-2 absolute left-2 top-2">
 
@@ -26,7 +49,11 @@ export const VaultSelector = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-40">
                         <DropdownMenuGroup>
-                            <DropdownMenuItem className="cursor-pointer">/home/...vbault.kdbx</DropdownMenuItem> {/* get_history */}
+                            {history.length > 0 ? (
+                                history.map((item, index) => (
+                                    <DropdownMenuItem key={index} className="cursor-pointer">{item.display}</DropdownMenuItem>
+                                ))
+                            ) : <DropdownMenuItem className="pointer-events-none" variant="destructive">No history</DropdownMenuItem>}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>

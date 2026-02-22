@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 from app.core.config import settings
 from app.utils.logger import logger
@@ -96,3 +96,34 @@ def clear_history() -> bool:
     except OSError as e:
         logger.error(f"Failed to delete history file: {e}")
         return False
+
+
+def truncate_paths_middle(paths: List[str], max_length: int = 22) -> List[Dict[str, str]]:
+    """
+    Processes a list of file paths, truncating those that exceed 
+    the maximum length, retaining the beginning and end (e.g. C:\\User...boveda.kdbx).
+
+    :param paths: A list of file path strings to be processed.
+    :type paths: List[str]
+    :param max_length: The maximum allowed length for the display string. Defaults to 22.
+    :type max_length: int
+    :return: A list of dictionaries containing 'raw' (original) and 'display' (truncated) paths.
+    :rtype: List[Dict[str, str]]
+    """
+    result = []
+    
+    for path in paths:
+        if not path or len(path) <= max_length:
+            result.append({"raw": path, "display": path})
+            continue
+            
+        ellipsis = "..."
+        chars_left = max_length - len(ellipsis)
+        
+        front_len = chars_left // 2
+        back_len = chars_left - front_len
+        
+        truncated = f"{path[:front_len]}{ellipsis}{path[-back_len:]}"
+        result.append({"raw": path, "display": truncated})
+        
+    return result

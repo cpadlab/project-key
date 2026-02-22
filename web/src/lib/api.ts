@@ -26,4 +26,9 @@ export const backendAPI = {
         return await api.get_app_version()
     },
 
+    getHistory: async (): Promise<{raw: string, display: string}[]> => {
+        const api = await getPywebviewApi()
+        return await api.get_history()
+    },
+
 }

@@ -1,7 +1,8 @@
 import webview
-from typing import Optional
+from typing import Optional, List, Dict
 
 from app.core.config import settings
+from app.controllers.history import get_history as get_history_controller, truncate_paths_middle
 
 
 class API:
@@ -23,3 +24,6 @@ class API:
     
     def get_app_name(self) -> str:
         return settings.PROJECT_NAME
+    
+    def get_history(self) -> List[Dict[str, str]]:
+        return truncate_paths_middle(get_history_controller())
