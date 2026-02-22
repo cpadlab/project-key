@@ -56,3 +56,9 @@ class API:
 
     def generate_keyfile(self, path: str) -> Optional[str]:
         return generate_keyfile(path)
+
+
+    def get_startup_route(self) -> str:        
+        if settings.FILE_PATH:
+            return "/login"
+        return "/welcome"

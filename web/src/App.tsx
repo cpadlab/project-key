@@ -3,11 +3,19 @@ import { Toaster } from "@/components/ui/sonner"
 
 import { ThemeProvider } from "./contexts/theme-context"
 import WelcomePage from "./pages/welcome"
+import RouteDirector from "./pages/route-director"
 
 const DashboardPage = () => {
     return (
         <div className="h-dvh flex items-center justify-center bg-background text-foreground">
             <h1 className="text-3xl font-bold">Welcome to your Vault! 🔐</h1>
+        </div>
+    )
+}
+const LoginPage = () => {
+    return (
+        <div className="h-dvh flex items-center justify-center bg-background text-foreground">
+            <h1 className="text-3xl font-bold">Login Page</h1>
         </div>
     )
 }
@@ -18,8 +26,10 @@ function App() {
             
             <Router>
                 <Routes>
-                    <Route path="/" element={<WelcomePage />} />
+                    <Route path="/" element={<RouteDirector />} />
+                    <Route path="/welcome" element={<WelcomePage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/login" element={<LoginPage />} />
                 </Routes>
             </Router>
 

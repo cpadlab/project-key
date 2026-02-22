@@ -49,6 +49,11 @@ export const backendAPI = {
     generateKeyfile: async (path: string): Promise<string | null> => {
         const api = await getPywebviewApi()
         return await api.generate_keyfile(path)
-    }
+    },
+
+    getStartupRoute: async (): Promise<string> => {
+        const api = await getPywebviewApi()
+        return await api.get_startup_route()
+    },
 
 }
