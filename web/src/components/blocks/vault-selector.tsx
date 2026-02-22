@@ -3,6 +3,7 @@ import { ButtonGroup } from "../ui/button-group"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 import { backendAPI as backend } from "@/lib/api"
 
@@ -26,6 +27,21 @@ export const VaultSelector = () => {
         }
         fetchHistory()
     }, [])
+
+    const handleClearHistory = async () => {
+        try {
+            const success = await backend.clearHistory()
+            if (success) {
+                setHistory([])
+                toast.success("History cleared successfully") 
+            } else {
+                toast.error("Failed to clear history") 
+            }
+        } catch (error) {
+            console.error("Error:", error)
+            toast.error("An error occurred while clearing history") 
+        }
+    }
     
     return (
         <div className="flex items-center gap-2 absolute left-2 top-2">
@@ -57,7 +73,7 @@ export const VaultSelector = () => {
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem variant="destructive" className="cursor-pointer">
+                            <DropdownMenuItem onClick={handleClearHistory} variant="destructive" className="cursor-pointer">
                                 <Trash2Icon />
                                 <span>Clear history</span>
                             </DropdownMenuItem>

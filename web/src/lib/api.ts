@@ -31,4 +31,9 @@ export const backendAPI = {
         return await api.get_history()
     },
 
+    clearHistory: async (): Promise<boolean> => {
+        const api = await getPywebviewApi()
+        return await api.clear_history()
+    },
+
 }
