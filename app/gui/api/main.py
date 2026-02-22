@@ -13,5 +13,13 @@ class API:
         self._window: Optional[webview.Window] = None
 
 
+    def set_window(self, window: webview.Window):
+        self._window = window
+
+        
     def get_app_version(self) -> str:
         return settings.VERSION
+    
+    
+    def get_app_name(self) -> str:
+        return settings.PROJECT_NAME
