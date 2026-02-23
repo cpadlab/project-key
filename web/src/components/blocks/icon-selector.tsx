@@ -1,6 +1,6 @@
 import { FolderIcon, KeyIcon, GlobeIcon, MailIcon, CreditCardIcon, SmartphoneIcon, MonitorIcon, WifiIcon, BriefcaseIcon, HeartIcon, ShieldIcon, StarIcon} from "lucide-react"
 
-const DEFAULT_ICONS = [
+export const DEFAULT_ICONS = [
     { id: 48, icon: FolderIcon },
     { id: 0, icon: KeyIcon },
     { id: 1, icon: GlobeIcon },

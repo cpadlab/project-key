@@ -6,7 +6,7 @@ import { PlusIcon } from "lucide-react"
 import { CreateGroupDialog } from "./forms/create-new-group"
 import { backendAPI as backend } from '@/lib/api';
 import type { GroupModel } from "@/global"
-import GroupCard from "./cards/group-card"
+import GroupCard from "./cards/group-card/card"
 
 const Leftbar = () => {
 
@@ -30,19 +30,16 @@ const Leftbar = () => {
     return (
         <Sidebar>
             
-            <SidebarHeader>
-                <div className="flex items-center gap-2 justify-between">
-                    <SidebarGroupLabel>Grups</SidebarGroupLabel>
-                    <CreateGroupDialog>
-                        <Button size="icon-xs" variant="secondary" className="text-primary">
-                            <PlusIcon />
-                        </Button>
-                    </CreateGroupDialog>
-                </div>
-            </SidebarHeader>
-
             <SidebarContent>
                 <SidebarGroup>
+                    <div className="flex items-center gap-2 justify-between">
+                        <SidebarGroupLabel>Grups</SidebarGroupLabel>
+                        <CreateGroupDialog>
+                            <Button size="icon-xs" variant="secondary" className="text-primary">
+                                <PlusIcon />
+                            </Button>
+                        </CreateGroupDialog>
+                    </div>
                     {groups && groups.length > 0 && (
                         groups.map((item, index) => (
                             <GroupCard data={item} key={index} />
