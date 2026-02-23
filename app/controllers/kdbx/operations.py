@@ -106,16 +106,38 @@ def list_groups() -> List[GroupModel]:
     :rtype: List[GroupModel]
     """
     vault = get_active_vault()
+    
     if not vault:
         logger.warning("Attempted to list groups but no vault session is active.")
         return []
 
     logger.debug("Fetching flat group list from the vault...")
-    groups = [
-        GroupModel.from_pykeepass(g) 
-        for g in vault.groups 
-        if g.name != "Root"
-    ]
+    groups = []
+    
+    for g in vault.groups:
+        if g.name != "Root":
+            model = GroupModel.from_pykeepass(g)
+            
+            if g.notes:
+                metadata = {}
+                for part in g.notes.split(','):
+                    if ':' in part:
+                        key, val = part.split(':', 1)
+                        metadata[key.strip()] = val.strip()
+                
+                custom_icon = metadata.get("icon")
+                if custom_icon and custom_icon != "None":
+                    try:
+                        model.icon = int(custom_icon)
+                    except ValueError:
+                        pass
+                
+                custom_color = metadata.get("color")
+                if custom_color and custom_color != "None":
+                    model.color = custom_color
+            
+            groups.append(model)
+            
     return sort_groups(groups)
 
 
@@ -234,12 +256,9 @@ def create_group(group_data: GroupModel) -> bool:
         return False
 
     try:
-        new_group = vault.add_group(vault.root_group, group_data.name, icon=group_data.icon)
-        
-        if group_data.color:
-            new_group.set_custom_property("color", group_data.color)
-        
-        _save_vault_safely(vault=vault)
+        notes_str = f"icon:{group_data.icon}, color:{group_data.color}"
+        new_group = vault.add_group(vault.root_group, group_data.name, notes=notes_str)
+        vault.save()
         logger.info(f"Group '{group_data.name}' created successfully.")
         return True
 
@@ -267,16 +286,11 @@ def update_group(group_name: str, data: GroupModel) -> bool:
         return False
 
     try:
-        group.name = data.name
-        group.icon = data.icon
-        
-        if data.color:
-            group.set_custom_property("color", data.color)
-        
-        _save_vault_safely(vault=vault)
+        group.name = data.name #
+        group.notes = f"icon:{data.icon}, color:{data.color}"
+        vault.save()
         logger.info(f"Group '{group_name}' updated to '{data.name}'.")
         return True
-
     except Exception as e:
         logger.error(f"Failed to update group: {e}")
         return False
@@ -348,11 +362,15 @@ def add_entry(entry: EntryModel) -> bool:
     try:
         new_entry = vault.add_entry(
             target_group, entry.title, entry.username, entry.password, 
-            url=entry.url, notes=entry.notes, tags=entry.tags, icon=entry.icon
+            url=entry.url, notes=entry.notes, tags=entry.tags
         )
         
         if entry.color:
             new_entry.set_custom_property("color", entry.color)
+
+        if entry.icon is not None:
+            new_entry.set_custom_property("icon", str(entry.icon))
+
         new_entry.set_custom_property("is_favorite", str(entry.is_favorite))
         
         if entry.totp_seed:
@@ -398,9 +416,9 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
         entry.url = data.url
         entry.notes = data.notes
         entry.tags = data.tags
-        entry.icon = data.icon
         entry.otp = data.totp_seed
-        
+
+        entry.set_custom_property("icon", str(data.icon))        
         entry.set_custom_property("color", data.color)
         entry.set_custom_property("is_favorite", str(data.is_favorite))
         

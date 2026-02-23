@@ -63,6 +63,8 @@ class GroupModel(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
 
     @classmethod
     def from_pykeepass(cls, kp_group: Group) -> "GroupModel":
