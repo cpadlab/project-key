@@ -1,3 +1,4 @@
+import json
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from pykeepass.entry import Entry
@@ -71,11 +72,29 @@ class GroupModel(BaseModel):
         """
         Create a GroupModel instance from a pykeepass Group object.
         """
-        custom = kp_group.custom_properties
+        metadata = {}
+        if kp_group.notes:
+            try:
+                metadata = json.loads(kp_group.notes)
+            except json.JSONDecodeError:
+                try:
+                    for part in kp_group.notes.split(','):
+                        if ':' in part:
+                            k, v = part.split(':', 1)
+                            metadata[k.strip()] = v.strip()
+                except Exception:
+                    metadata = {}
+
+        custom_icon = metadata.get("icon")
+        try:
+            icon_val = int(custom_icon) if custom_icon is not None and str(custom_icon) != "None" else kp_group.icon
+        except ValueError:
+            icon_val = kp_group.icon
+
         return cls(
             name=kp_group.name,
-            icon=kp_group.icon,
-            color=custom.get("color"),
+            icon=icon_val,
+            color=metadata.get("color") if metadata.get("color") != "None" else None,
             created_at=kp_group.ctime,
             updated_at=kp_group.mtime
         )

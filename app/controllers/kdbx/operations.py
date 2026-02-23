@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from typing import List, Optional, Literal
@@ -106,38 +107,15 @@ def list_groups() -> List[GroupModel]:
     :rtype: List[GroupModel]
     """
     vault = get_active_vault()
-    
     if not vault:
-        logger.warning("Attempted to list groups but no vault session is active.")
         return []
 
-    logger.debug("Fetching flat group list from the vault...")
-    groups = []
-    
-    for g in vault.groups:
-        if g.name != "Root":
-            model = GroupModel.from_pykeepass(g)
-            
-            if g.notes:
-                metadata = {}
-                for part in g.notes.split(','):
-                    if ':' in part:
-                        key, val = part.split(':', 1)
-                        metadata[key.strip()] = val.strip()
-                
-                custom_icon = metadata.get("icon")
-                if custom_icon and custom_icon != "None":
-                    try:
-                        model.icon = int(custom_icon)
-                    except ValueError:
-                        pass
-                
-                custom_color = metadata.get("color")
-                if custom_color and custom_color != "None":
-                    model.color = custom_color
-            
-            groups.append(model)
-            
+    logger.debug("Fetching flat group list (JSON parsed)...")
+    groups = [
+        GroupModel.from_pykeepass(g) 
+        for g in vault.groups 
+        if g.name != "Root"
+    ]
     return sort_groups(groups)
 
 
@@ -248,20 +226,17 @@ def create_group(group_data: GroupModel) -> bool:
     :rtype: bool
     """
     vault = get_active_vault()
-    if not vault:
-        return False
-
-    if get_group(group_data.name):
-        logger.warning(f"Group '{group_data.name}' already exists.")
+    if not vault or get_group(group_data.name):
         return False
 
     try:
-        notes_str = f"icon:{group_data.icon}, color:{group_data.color}"
-        new_group = vault.add_group(vault.root_group, group_data.name, notes=notes_str)
-        vault.save()
-        logger.info(f"Group '{group_data.name}' created successfully.")
+        notes_json = json.dumps({
+            "icon": group_data.icon,
+            "color": group_data.color
+        })
+        vault.add_group(vault.root_group, group_data.name, notes=notes_json)
+        _save_vault_safely(vault=vault)
         return True
-
     except Exception as e:
         logger.error(f"Failed to create group: {e}")
         return False
@@ -280,16 +255,17 @@ def update_group(group_name: str, data: GroupModel) -> bool:
     """
     vault = get_active_vault()
     group = get_group(group_name)
-
+    
     if not group:
-        logger.error(f"Cannot update: Group '{group_name}' not found.")
         return False
 
     try:
-        group.name = data.name #
-        group.notes = f"icon:{data.icon}, color:{data.color}"
-        vault.save()
-        logger.info(f"Group '{group_name}' updated to '{data.name}'.")
+        group.name = data.name
+        group.notes = json.dumps({
+            "icon": data.icon,
+            "color": data.color
+        })
+        _save_vault_safely(vault=vault)
         return True
     except Exception as e:
         logger.error(f"Failed to update group: {e}")
