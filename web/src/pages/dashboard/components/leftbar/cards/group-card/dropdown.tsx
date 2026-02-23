@@ -31,7 +31,7 @@ export const GroupDropdown = ({ data }: GroupDropdownProps) => {
             <DropdownMenu>
                 
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon-xs" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="secondary" size="icon-xs" className="opacity-0 group-hover/card:opacity-100 transition-opacity">
                         <MoreVertical className="h-4 w-4" />
                         <span className="sr-only">Open menu</span>
                     </Button>

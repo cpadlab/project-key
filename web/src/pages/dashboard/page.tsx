@@ -1,7 +1,10 @@
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 const DashboardPage = () => {
     return (
-        <div>page</div>
+        <div>
+            <SidebarTrigger />
+        </div>
     )
 }
 

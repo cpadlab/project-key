@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, type LucideIcon } from "lucide-react"
 
 import { CreateGroupDialog } from "./forms/create-new-group"
@@ -73,14 +73,10 @@ const Leftbar = () => {
     return (
         <Sidebar>
 
-            <SidebarHeader>
-                <span className="text-sm font-semibold">Project Key</span>
-            </SidebarHeader>
-
             <SidebarContent>
                 <SidebarGroup>
                     <div className="flex items-center gap-2 justify-between">
-                        <SidebarGroupLabel>Grups</SidebarGroupLabel>
+                        <SidebarGroupLabel>Groups</SidebarGroupLabel>
                         <CreateGroupDialog>
                             <Button size="icon-xs" variant="secondary" className="text-primary">
                                 <PlusIcon />
@@ -97,6 +93,7 @@ const Leftbar = () => {
 
 
             <SidebarFooter>
+                <Separator />
                 {data.map((group, idx_group) => (
                     <>
                         <SidebarMenu key={idx_group}>
