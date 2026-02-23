@@ -256,7 +256,7 @@ def update_group(group_name: str, data: GroupModel) -> bool:
     vault = get_active_vault()
     group = get_group(group_name)
     
-    if not group:
+    if not group or group.name == settings.PERSONAL_GROUP_NAME:
         return False
 
     try:
@@ -284,7 +284,7 @@ def delete_group(group_name: str, force_delete_entries: bool = False, move_entri
     vault = get_active_vault()
     group = get_group(group_name)
 
-    if not group or group.name == "Root":
+    if not group or group.name == "Root" or group.name == settings.PERSONAL_GROUP_NAME:
         logger.error("Invalid group deletion request.")
         return False
 
