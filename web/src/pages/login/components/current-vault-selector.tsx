@@ -80,7 +80,6 @@ export const CurrentVaultSelector = () => {
                     })}
                     
                     <DropdownMenuSeparator />
-                    
                     <DropdownMenuItem className="cursor-pointer text-orange-500 focus:text-orange-600 focus:bg-orange-500/10" onClick={openFileSelector}>
                         <FolderOpenIcon className="w-4 h-4 text-orange-500 focus:text-orange-600" />
                         <span>Browse another vault...</span>

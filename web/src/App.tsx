@@ -5,14 +5,8 @@ import { ThemeProvider } from "./contexts/theme-context"
 import WelcomePage from "./pages/welcome"
 import LoginPage from "./pages/login/page"
 import RouteDirector from "./pages/route-director"
-
-const DashboardPage = () => {
-    return (
-        <div className="h-dvh flex items-center justify-center bg-background text-foreground">
-            <h1 className="text-3xl font-bold">Welcome to your Vault! 🔐</h1>
-        </div>
-    )
-}
+import DashboardLayout from "./pages/dashboard/layout"
+import DashboardPage from "./pages/dashboard/page"
 
 function App() {
     return (
@@ -22,8 +16,10 @@ function App() {
                 <Routes>
                     <Route path="/" element={<RouteDirector />} />
                     <Route path="/welcome" element={<WelcomePage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route element={<DashboardLayout />}>
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                    </Route>
                 </Routes>
             </Router>
 
