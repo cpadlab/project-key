@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldError } from "@/components/ui/field"
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton} from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 
 import { backendAPI as backend } from "@/lib/api"
 
@@ -21,6 +23,7 @@ type UnlockFormValues = z.infer<typeof unlockSchema>
 export const UnlockVault = () => {
 
     const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate()
 
     const form = useForm<UnlockFormValues>({
         resolver: zodResolver(unlockSchema),
@@ -34,8 +37,26 @@ export const UnlockVault = () => {
         setShowPassword(!showPassword)
     }
 
-    const onSubmit = (data: UnlockFormValues) => {
-        console.log("Valid data ready to be sent to backend:", data)
+    const onSubmit = async (data: UnlockFormValues) => {
+        const loadingId = toast.loading("Unlocking vault...")
+        
+        try {
+            const success = await backend.unlockVault(data.password, data.keyFile);
+            
+            if (success) {
+                toast.success("Vault unlocked successfully!", { id: loadingId })
+                navigate("/dashboard") 
+            } else {
+                toast.error("Invalid password or key file", { 
+                    id: loadingId,
+                    description: "Please check your credentials and try again."
+                })
+                form.setValue("password", "")
+            }
+        } catch (error) {
+            console.error("Unlock error:", error)
+            toast.error("An unexpected error occurred", { id: loadingId })
+        }
     }
 
     const handleBrowseKeyFile = async (onChange: (...event: any[]) => void) => {

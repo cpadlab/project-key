@@ -79,5 +79,11 @@ export const backendAPI = {
         const api = await getPywebviewApi()
         return await api.select_file(['Key Files (*.key;*.keyx)', 'All files (*.*)'])
     },
+    
+    unlockVault: async (password: string, keyfile: string | null = null): Promise<boolean> => {
+        const api = await getPywebviewApi()
+        const parsedKeyfile = keyfile && keyfile.trim() !== "" ? keyfile : null;
+        return await api.open_vault(password, parsedKeyfile)
+    },
 
 }

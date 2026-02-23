@@ -3,7 +3,9 @@ from typing import Optional, List, Dict
 from pathlib import Path
 
 from app.core.config import settings
-from app.controllers.kdbx.manager import generate_keyfile, create_new_vault
+from app.controllers.kdbx.manager import (
+    generate_keyfile, create_new_vault, open_vault as open_vault_controller
+)
 from app.utils.logger import logger
 from app.controllers.history import (
     get_history as get_history_controller, truncate_paths_middle, 
@@ -85,6 +87,7 @@ class API:
             logger.error(f"Failed to update FILE_PATH setting: {e}")
             settings.FILE_PATH = None
             return False
+        
         logger.info(f"Application FILE_PATH updated to: {path}")
         return True
 
@@ -105,3 +108,21 @@ class API:
         if result and len(result) > 0:
             return result[0]
         return None
+
+    
+    def open_vault(self, password: str, keyfile: Optional[str] = None) -> bool:
+        if not settings.FILE_PATH:
+            logger.error("Attempted to unlock vault, but no FILE_PATH is set.")
+            return False
+            
+        try:
+            success = open_vault_controller(path=settings.FILE_PATH, password=password, keyfile=keyfile) 
+            if success:
+                logger.info("Vault successfully unlocked via GUI.")
+                return True
+            else:
+                logger.warning("Failed to unlock vault (invalid credentials).")
+                return False
+        except Exception as e:
+            logger.error(f"Error while opening vault: {e}")
+            return False
