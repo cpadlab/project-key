@@ -4,7 +4,10 @@ from pathlib import Path
 
 from app.core.config import settings
 from app.controllers.kdbx.models import GroupModel
-from app.controllers.kdbx.operations import create_group as create_group_controller
+from app.controllers.kdbx.operations import (
+    create_group as create_group_controller,
+    list_groups as list_groups_controller
+)
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller
 )
@@ -146,3 +149,12 @@ class API:
         except Exception as e:
             logger.error(f"Fatal error creating group: {e}")
             return False
+
+
+    def list_groups(self) -> List[Dict]:
+        try:
+            groups = list_groups_controller()
+            return [g.model_dump(mode='json') for g in groups]
+        except Exception as e:
+            logger.error(f"Error listing groups: {e}")
+            return []

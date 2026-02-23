@@ -1,3 +1,5 @@
+import type { GroupModel } from "@/global"
+
 
 const getPywebviewApi = (): Promise<any> => {
     
@@ -89,6 +91,11 @@ export const backendAPI = {
     createGroup: async (name: string, icon: number = 48, color?: string): Promise<boolean> => {
         const api = await getPywebviewApi();
         return await api.create_group(name, icon, color);
+    },
+
+    listGroups: async (): Promise<GroupModel[]> => {
+        const api = await getPywebviewApi();
+        return await api.list_groups();
     },
 
 }
