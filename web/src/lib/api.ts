@@ -1,7 +1,11 @@
 
 const getPywebviewApi = (): Promise<any> => {
     
-    if (window.pywebview && window.pywebview.api) {
+    if (
+        window.pywebview && 
+        window.pywebview.api && 
+        Object.keys(window.pywebview.api).length > 0
+    ) {
         return Promise.resolve(window.pywebview.api)
     }
 
