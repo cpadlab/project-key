@@ -5,7 +5,8 @@ from app.core.config import settings
 from app.controllers.kdbx.manager import generate_keyfile, create_new_vault
 from app.utils.logger import logger
 from app.controllers.history import (
-    get_history as get_history_controller, truncate_paths_middle, clear_history as clear_history_controller
+    get_history as get_history_controller, truncate_paths_middle, 
+    clear_history as clear_history_controller, update_history
 )
 
 
@@ -72,11 +73,13 @@ class API:
 
         try:
             settings.FILE_PATH = path
-            logger.info(f"Application FILE_PATH updated to: {path}")
-            return True
+            update_history(path)
         except Exception as e:
             logger.error(f"Failed to update FILE_PATH setting: {e}")
+            settings.FILE_PATH = None
             return False
+        logger.info(f"Application FILE_PATH updated to: {path}")
+        return True
 
     
     def select_vault_file(self) -> Optional[str]:
