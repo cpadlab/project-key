@@ -4,8 +4,6 @@ import webview
 import pystray
 from PIL import Image
 import sys
-import platform
-import ctypes
 
 from app.core.config import settings, _BASE_DIR
 from app.utils.logger import logger
@@ -31,10 +29,6 @@ class GUIManager:
         :return: None
         :rtype: None
         """
-        if platform.system() == 'Windows':
-            myappid = f'cpadlab.{settings.PROJECT_NAME}.gui.{settings.VERSION}'
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-
         self.api = API()
         self._is_shutting_down = False
         
