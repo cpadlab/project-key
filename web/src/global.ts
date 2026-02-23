@@ -1,3 +1,10 @@
+export interface GroupModel {
+    name: string;
+    icon: number | null;
+    color: string | null;
+    created_at?: string;
+    updated_at?: string;
+}
 
 declare global {
     interface Window {
@@ -15,6 +22,7 @@ declare global {
                 select_file: (file_types: string[]) => Promise<string | null>;
                 open_vault: (password: string, keyfile: string | null) => Promise<boolean>;
                 create_group: (name: string, icon: number, color?: string) => Promise<boolean>;
+                list_groups(): Promise<GroupModel[]>;
             }
         }
     }
