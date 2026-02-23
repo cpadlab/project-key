@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { backendAPI as backend } from "@/lib/api";
 
-export const useVaultSelection = () => {
+export const useVaultSelection = (onHistoryChange?: () => void) => {
     
     const navigate = useNavigate();
 
@@ -13,7 +13,12 @@ export const useVaultSelection = () => {
             if (success) {
                 navigate("/login");
             } else {
-                toast.error("Could not select the vault file");
+                toast.error("File not found", {
+                    description: "The selected vault no longer exists and was removed from history."
+                });
+                if (onHistoryChange) {
+                    onHistoryChange();
+                }
             }
         } catch (error) {
             console.error("Selection error:", error);

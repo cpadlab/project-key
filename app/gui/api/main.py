@@ -1,12 +1,14 @@
 import webview
 from typing import Optional, List, Dict
+from pathlib import Path
 
 from app.core.config import settings
 from app.controllers.kdbx.manager import generate_keyfile, create_new_vault
 from app.utils.logger import logger
 from app.controllers.history import (
     get_history as get_history_controller, truncate_paths_middle, 
-    clear_history as clear_history_controller, update_history
+    clear_history as clear_history_controller, update_history,
+    remove_from_history
 )
 
 
@@ -69,6 +71,11 @@ class API:
     def set_file_path(self, path: str) -> bool:
         if not path:
             logger.error("Attempted to set an empty FILE_PATH.")
+            return False
+
+        if not Path(path).exists():
+            logger.warning(f"File not found: '{path}'. Removing from history.")
+            remove_from_history(path)
             return False
 
         try:
