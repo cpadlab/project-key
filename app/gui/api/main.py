@@ -82,14 +82,17 @@ class API:
         return True
 
     
-    def select_vault_file(self) -> Optional[str]:
+    def select_file(self, file_types: tuple = ('All files (*.*)',)) -> Optional[str]:
         if not self._window:
             return None
+
+        if isinstance(file_types, list):
+            file_types = tuple(file_types)
             
         result = self._window.create_file_dialog(
             webview.FileDialog.OPEN,
             allow_multiple=False,
-            file_types=('KeePass Database (*.kdbx)', 'All files (*.*)')
+            file_types=file_types
         )
         
         if result and len(result) > 0:

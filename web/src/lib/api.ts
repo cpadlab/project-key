@@ -65,9 +65,19 @@ export const backendAPI = {
         return await api.set_file_path(path);
     },
 
+    selectFile: async (fileTypes: string[] = ['All files (*.*)']): Promise<string | null> => {
+        const api = await getPywebviewApi()
+        return await api.select_file(fileTypes)
+    },
+
     selectVaultFile: async (): Promise<string | null> => {
         const api = await getPywebviewApi()
-        return await api.select_vault_file()
+        return await api.select_file(['KeePass Database (*.kdbx)', 'All files (*.*)'])
+    },
+
+    selectKeyFile: async (): Promise<string | null> => {
+        const api = await getPywebviewApi()
+        return await api.select_file(['Key Files (*.key *.keyx)', 'All files (*.*)'])
     },
 
 }
