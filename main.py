@@ -8,6 +8,7 @@ from app.utils.logger import logger, update_logger_level
 from app.utils.cli import get_args
 from app.core.config import settings
 from app.gui.manager import GUIManager
+from app.controllers.history import load_last_history_path
 
 
 def main(arguments: argparse.Namespace) -> None:
@@ -38,9 +39,10 @@ def main(arguments: argparse.Namespace) -> None:
         logger.info(f"Log level set to: {settings.LOG_LEVEL}")
         
         if settings.FILE_PATH:
-            logger.info(f"Database file: {settings.FILE_PATH}")
+            logger.info(f"Database file specified via args/config: {settings.FILE_PATH}")
         else:
-            logger.info("No database file specified")
+            logger.info("No database file specified explicitly. Checking history...")
+            load_last_history_path()
 
         gui = GUIManager()
         gui.run()

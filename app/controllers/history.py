@@ -127,3 +127,27 @@ def truncate_paths_middle(paths: List[str], max_length: int = 22) -> List[Dict[s
         result.append({"raw": path, "display": truncated})
         
     return result
+
+
+def load_last_history_path() -> bool:
+    """
+    Retrieves the most recently used database file path from the history
+    and sets it as the current FILE_PATH in the application settings if it 
+    still exists on disk.
+
+    :return: True if a valid path was found and loaded, False otherwise.
+    :rtype: bool
+    """
+    history = get_history()
+    
+    if history:
+        last_path = history[0]
+        if Path(last_path).exists():
+            settings.FILE_PATH = last_path
+            logger.info(f"Loaded last used database file from history: {settings.FILE_PATH}")
+            return True
+        else:
+            logger.debug(f"History path found ('{last_path}') but file no longer exists on disk.")
+            
+    logger.info("No database file specified and no valid history found.")
+    return False
