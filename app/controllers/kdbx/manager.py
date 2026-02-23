@@ -56,6 +56,8 @@ def create_new_vault(path: str, password: str, keyfile: Optional[str] = None) ->
     try:
         logger.info(f"Initializing new vault creation at: {output_path}")
         kp = create_database(filename=str(output_path), password=password, keyfile=keyfile)
+        
+        kp.add_group(kp.root_group, settings.PERSONAL_GROUP_NAME)
 
         kp.save()
         _register_active_vault(str(output_path), kp)
