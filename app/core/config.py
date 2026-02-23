@@ -117,7 +117,7 @@ class Settings(BaseSettings):
     MIN_WINDOW_WIDTH: int = Field(default=400)
     DEV_TOOLS: bool = Field(default=False)
     ENTRY_URL: str = Field(default="build/index.html")
-    ICON: str = 'logo.ico'
+    ICON: str = 'icon.ico'
 
     model_config = SettingsConfigDict(
         extra="ignore",

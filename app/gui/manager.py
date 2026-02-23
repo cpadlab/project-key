@@ -1,8 +1,13 @@
 import threading
+import os
 import webview
+import pystray
+from PIL import Image
 import sys
+import platform
+import ctypes
 
-from app.core.config import settings
+from app.core.config import settings, _BASE_DIR
 from app.utils.logger import logger
 from app.controllers.updater import check_for_updates
 from app.services.main import start_background_services
@@ -26,7 +31,12 @@ class GUIManager:
         :return: None
         :rtype: None
         """
+        if platform.system() == 'Windows':
+            myappid = f'cpadlab.{settings.PROJECT_NAME}.gui.{settings.VERSION}'
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
         self.api = API()
+        self._is_shutting_down = False
         
         self.entry_url = settings.ENTRY_URL
         GUIManager._validate_resource(entry_url=self.entry_url)
@@ -110,6 +120,22 @@ class GUIManager:
         sys.exit(0)
 
 
+    def _on_closing(self) -> bool:
+        """
+        Intercept the window closing event. 
+
+        :return: True to proceed with closing the window, False to cancel and hide.
+        :rtype: bool
+        """
+        if self._is_shutting_down:
+            logger.info("Proceeding to close application...")
+            return True 
+            
+        logger.info("Minimizing to tray instead of closing...")
+        self.window.hide()
+        return False
+
+
     def run(self) -> None:
         """
         Bind the window lifecycle events and start the main pywebview event loop.
@@ -122,7 +148,62 @@ class GUIManager:
 
         self.window.events.shown += self._on_startup
         self.window.events.closed += self._on_closed
+        self.window.events.closing += self._on_closing
+
+        self._setup_tray()
+
+        absolute_icon_path = str((_BASE_DIR / settings.ICON).resolve())
+        logger.debug(f"Loading window icon from absolute path: {absolute_icon_path}")
 
         webview.start(
             debug=settings.DEV_TOOLS,
+            icon=absolute_icon_path
         )
+
+
+    def _setup_tray(self) -> None:
+        """
+        Configure and initialize the system tray icon.
+        Runs in a separate thread to coexist with the pywebview event loop 
+        without blocking the main thread.
+
+        :return: None
+        :rtype: None
+        """
+        def show_app(icon, item):
+            self.window.show()
+
+        def hide_app(icon, item):
+            self.window.hide()
+
+        def exit_app(icon, item):
+            self._is_shutting_down = True
+            icon.stop()
+            self.window.destroy()
+
+        tray_menu = pystray.Menu(
+            pystray.MenuItem('Show App', show_app, default=True),
+            pystray.MenuItem('Hide App', hide_app),
+            pystray.MenuItem('Exit Application', exit_app)
+        )
+
+        try:
+            image = Image.open(settings.ICON) 
+        except FileNotFoundError:
+            from PIL import ImageDraw
+            image = Image.new('RGB', (64, 64), color='black')
+            ImageDraw.Draw(image).text((15, 25), "App", fill='white')
+
+        self.tray_icon = pystray.Icon(
+            name=settings.PROJECT_KEY, 
+            icon=image, 
+            title=settings.PROJECT_NAME, 
+            menu=tray_menu
+        )
+
+        tray_thread = threading.Thread(
+            target=self.tray_icon.run, 
+            daemon=True, 
+            name="TrayIconThread"
+        )
+        tray_thread.start()
