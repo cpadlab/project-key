@@ -65,7 +65,7 @@ export const GroupDropdown = ({ data }: GroupDropdownProps) => {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <DeleteGroupDialog groupName={data.name} isOpen={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} onSuccess={() => {window.location.reload(); }}/>
+            <DeleteGroupDialog onSuccess={() => {window.dispatchEvent(new CustomEvent('vault-changed'));}} groupName={data.name} isOpen={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} />
 
         </>
     );
