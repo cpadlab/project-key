@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar"
-import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon } from "lucide-react"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, type LucideIcon } from "lucide-react"
 
 import { CreateGroupDialog } from "./forms/create-new-group"
 import { backendAPI as backend } from '@/lib/api';
@@ -9,6 +9,17 @@ import type { GroupModel } from "@/global"
 import GroupCard from "./cards/group-card/card"
 import { Link } from "react-router-dom"
 import { Separator } from "@/components/ui/separator"
+
+interface FooterItem {
+    icon: LucideIcon;
+    label: string;
+    href: string;
+    className?: string;
+}
+
+interface FooterGroup {
+    items: FooterItem[];
+}
 
 const Leftbar = () => {
 
@@ -32,29 +43,39 @@ const Leftbar = () => {
         };
     }, []);
 
-    const data = [
+    const data: FooterGroup[] = [
         {
-            icon: ShieldCheckIcon,
-            label: "Pass Monitor",
-            href: "/monitor",
-            separator: false
+            items: [
+                {
+                    icon: ShieldCheckIcon,
+                    label: "Pass Monitor",
+                    href: "/monitor",
+                },
+                {
+                    icon: Settings2Icon,
+                    label: "Settings",
+                    href: "/settings",
+                },
+            ]
         },
         {
-            icon: Settings2Icon,
-            label: "Settings",
-            href: "/settings",
-            separator: false
-        },
-        {
-            icon: LogOutIcon,
-            label: "Close Session",
-            href: "/logout",
-            separator: true
-        },
+            items: [
+                {
+                    icon: LogOutIcon,
+                    label: "Close Session",
+                    href: "/logout",
+                    className: "text-destructive hover:text-destructive hover:bg-destructive/10"
+                },
+            ]
+        }
     ]
 
     return (
         <Sidebar>
+
+            <SidebarHeader>
+                <span className="text-sm font-semibold">Project Key</span>
+            </SidebarHeader>
 
             <SidebarContent>
                 <SidebarGroup>
@@ -76,23 +97,23 @@ const Leftbar = () => {
 
 
             <SidebarFooter>
-                <SidebarGroup>
-                    <SidebarMenu>
-                        {data.map((item, index) => (
-                            <>
-                                {item.separator && <Separator className="mt-2" />}
-                                <Link className={`${item.separator && "pt-2"}`} key={index} to={item.href}>
-                                    <SidebarMenuItem>
-                                        <Button size="sm" variant="ghost" className="justify-start w-full">
-                                            <item.icon className="size-4" />
+                {data.map((group, idx_group) => (
+                    <>
+                        <SidebarMenu key={idx_group}>
+                            {group.items.map((item, idx_item) => (
+                                <SidebarMenuItem key={idx_item}>
+                                    <SidebarMenuButton className={item.className} asChild tooltip="Pass Monitor">
+                                        <Link to={item.href}>
+                                            <item.icon />
                                             <span>{item.label}</span>
-                                        </Button>
-                                    </SidebarMenuItem>
-                                </Link>
-                            </>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroup>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                        {idx_group < data.length - 1 && <Separator />}
+                    </>
+                ))}
             </SidebarFooter>
 
         </Sidebar>
