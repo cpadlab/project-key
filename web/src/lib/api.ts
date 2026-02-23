@@ -77,7 +77,7 @@ export const backendAPI = {
 
     selectKeyFile: async (): Promise<string | null> => {
         const api = await getPywebviewApi()
-        return await api.select_file(['Key Files (*.key *.keyx)', 'All files (*.*)'])
+        return await api.select_file(['Key Files (*.key;*.keyx)', 'All files (*.*)'])
     },
 
 }

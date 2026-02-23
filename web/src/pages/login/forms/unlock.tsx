@@ -2,12 +2,13 @@ import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { EyeIcon, EyeOffIcon, ArrowRightIcon, FileKeyIcon } from "lucide-react"
-
+import { EyeIcon, EyeOffIcon, ArrowRightIcon, FileKeyIcon, XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError } from "@/components/ui/field"
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton} from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
+
+import { backendAPI as backend } from "@/lib/api"
 
 
 const unlockSchema = z.object({
@@ -37,8 +38,15 @@ export const UnlockVault = () => {
         console.log("Valid data ready to be sent to backend:", data)
     }
 
+    const handleBrowseKeyFile = async (onChange: (...event: any[]) => void) => {
+        const filePath = await backend.selectKeyFile();
+        if (filePath) {
+            onChange(filePath);
+        }
+    }
+
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex max-w-sm flex-col gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex md:max-w-sm max-w-xs flex-col gap-4">
             
             <Controller name="password" control={form.control} render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
@@ -68,12 +76,19 @@ export const UnlockVault = () => {
                     <Field className="flex flex-col items-center px-1">
                         <div className="flex text-nowrap flex-col flex-1">
                             <span className="text-sm font-medium">Key File (Optional)</span>
-                            <span className="text-xs text-muted-foreground">{field.value ? `Selected: ${field.value}` : "No key file selected"}</span>
+                            <p className="truncate text-xs text-muted-foreground">{field.value ? `Selected: ${field.value}` : "No key file selected"}</p>
                         </div>
-                        <Button variant="secondary" size="sm" className="min-w-0" type="button" onClick={() => field.onChange("C:\\Keys\\dummy-key.keyx")}>
-                            <FileKeyIcon className="w-4 h-4" />
-                            <span>Browse</span>
-                        </Button>
+                       <div className="flex items-center gap-1 shrink-0">
+                            {field.value && (
+                                <Button variant="ghost" size="icon" type="button" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => field.onChange("")} aria-label="Clear key file">
+                                    <XIcon className="w-4 h-4" />
+                                </Button>
+                            )}
+                            <Button variant="secondary" size="sm" className="flex-1 min-w-0" type="button" onClick={() => handleBrowseKeyFile(field.onChange)}>
+                                <FileKeyIcon className="w-4 h-4 mr-1" />
+                                <span>Browse</span>
+                            </Button>
+                        </div>
                     </Field>
                 )}
             />
