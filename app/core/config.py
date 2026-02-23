@@ -83,6 +83,7 @@ class Settings(BaseSettings):
     """
 
     PROJECT_NAME: str = "Project Key"
+    PROJECT_KEY: str = "project-key"
     VERSION: str = _get_version()
     LOG_LEVEL: str = Field(default="info")
     FILE_PATH: Optional[str] = Field(default=None)
@@ -116,6 +117,7 @@ class Settings(BaseSettings):
     MIN_WINDOW_WIDTH: int = Field(default=400)
     DEV_TOOLS: bool = Field(default=False)
     ENTRY_URL: str = Field(default="build/index.html")
+    ICON: str = 'logo.ico'
 
     model_config = SettingsConfigDict(
         extra="ignore",
