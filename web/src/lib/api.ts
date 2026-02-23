@@ -61,4 +61,9 @@ export const backendAPI = {
         return await api.set_file_path(path);
     },
 
+    selectVaultFile: async (): Promise<string | null> => {
+        const api = await getPywebviewApi()
+        return await api.select_vault_file()
+    },
+
 }

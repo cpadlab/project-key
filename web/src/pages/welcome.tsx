@@ -5,8 +5,12 @@ import { ToggleThemeSelector } from "@/components/blocks/toggle-theme-selector"
 import { VaultSelector } from "@/components/blocks/vault-selector"
 import { VersionBadge } from "@/components/blocks/version-badge"
 import { CreateNewVaultDialog } from "@/components/blocks/forms/create-new-vault"
+import { useVaultSelection } from "@/hooks/use-vault-selection";
 
 const WelcomePage = () => {
+
+    const { openFileSelector } = useVaultSelection();
+
     return (
         <main className="h-dvh bg-background flex items-center justify-center relative">
 
@@ -16,7 +20,7 @@ const WelcomePage = () => {
                 <p className="text-center text-3xl font-bold mb-2">Welcome to Project Key</p>
                 <p className="mb-4 text-center md:max-w-1/2 max-w-[90%]">Your ultimate offline password vault. Select an existing database or create a new secure environment to get started.</p>
                 <div className="flex items-center gap-2 justify-center">
-                    <Button>
+                    <Button onClick={openFileSelector}>
                         <span>Open Vault</span>
                         <FolderOpenIcon />
                     </Button>

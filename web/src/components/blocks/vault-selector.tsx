@@ -1,5 +1,4 @@
 import { ChevronDownIcon, PlusIcon, Trash2Icon } from "lucide-react"
-import { useNavigate } from "react-router-dom"
 import { ButtonGroup } from "../ui/button-group"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
@@ -8,6 +7,7 @@ import { toast } from "sonner"
 
 import { backendAPI as backend } from "@/lib/api"
 import { CreateNewVaultDialog } from "@/components/blocks/forms/create-new-vault"
+import { useVaultSelection } from "@/hooks/use-vault-selection";
 
 type HistoryItem = {
     raw: string;
@@ -16,8 +16,8 @@ type HistoryItem = {
 
 export const VaultSelector = () => {
 
-    const navigate = useNavigate();
     const [history, setHistory] = useState<HistoryItem[]>([])
+    const { handleSelectVault, openFileSelector } = useVaultSelection();
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -45,20 +45,6 @@ export const VaultSelector = () => {
             toast.error("An error occurred while clearing history") 
         }
     }
-
-    const handleSelectVault = async (path: string) => {
-        try {
-            const success = await backend.setFilePath(path);
-            if (success) {
-                navigate("/login");
-            } else {
-                toast.error("Could not select the vault file");
-            }
-        } catch (error) {
-            console.error("Selection error:", error);
-            toast.error("An unexpected error occurred");
-        }
-    }
     
     return (
         <div className="flex items-center gap-2 absolute left-2 top-2">
@@ -72,7 +58,7 @@ export const VaultSelector = () => {
 
             <ButtonGroup>
 
-                <Button size="sm" variant="outline" className="cursor-pointer">
+                <Button onClick={openFileSelector} size="sm" variant="outline" className="cursor-pointer">
                     <span>Open</span>                    
                 </Button>
 

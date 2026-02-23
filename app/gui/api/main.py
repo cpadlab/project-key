@@ -77,3 +77,18 @@ class API:
         except Exception as e:
             logger.error(f"Failed to update FILE_PATH setting: {e}")
             return False
+
+    
+    def select_vault_file(self) -> Optional[str]:
+        if not self._window:
+            return None
+            
+        result = self._window.create_file_dialog(
+            webview.FileDialog.OPEN,
+            allow_multiple=False,
+            file_types=('KeePass Database (*.kdbx)', 'All files (*.*)')
+        )
+        
+        if result and len(result) > 0:
+            return result[0]
+        return None
