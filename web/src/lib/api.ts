@@ -98,4 +98,9 @@ export const backendAPI = {
         return await api.list_groups();
     },
 
+    deleteGroup: async (name: string, force: boolean = false, moveTo: string | null = null): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.delete_group(name, force, moveTo);
+    },
+
 }

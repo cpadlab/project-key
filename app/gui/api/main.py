@@ -6,7 +6,8 @@ from app.core.config import settings
 from app.controllers.kdbx.models import GroupModel
 from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
-    list_groups as list_groups_controller
+    list_groups as list_groups_controller,
+    delete_group as delete_group_controller
 )
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller
@@ -158,3 +159,15 @@ class API:
         except Exception as e:
             logger.error(f"Error listing groups: {e}")
             return []
+
+
+    def delete_group(self, name: str, force: bool = False, move_to: Optional[str] = None) -> bool:
+        try:
+            target_group = move_to if move_to and move_to.strip() else None
+            success = delete_group_controller(group_name=name, force_delete_entries=force, move_entries_to=target_group)
+            if success:
+                logger.info(f"Group '{name}' deleted (Force: {force}, MoveTo: {target_group})")
+            return success
+        except Exception as e:
+            logger.error(f"Error in API delete_group: {e}")
+            return False
