@@ -1,4 +1,5 @@
 import { ChevronDownIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { ButtonGroup } from "../ui/button-group"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
@@ -15,6 +16,7 @@ type HistoryItem = {
 
 export const VaultSelector = () => {
 
+    const navigate = useNavigate();
     const [history, setHistory] = useState<HistoryItem[]>([])
 
     useEffect(() => {
@@ -41,6 +43,20 @@ export const VaultSelector = () => {
         } catch (error) {
             console.error("Error:", error)
             toast.error("An error occurred while clearing history") 
+        }
+    }
+
+    const handleSelectVault = async (path: string) => {
+        try {
+            const success = await backend.setFilePath(path);
+            if (success) {
+                navigate("/login");
+            } else {
+                toast.error("Could not select the vault file");
+            }
+        } catch (error) {
+            console.error("Selection error:", error);
+            toast.error("An unexpected error occurred");
         }
     }
     
@@ -70,7 +86,7 @@ export const VaultSelector = () => {
                         <DropdownMenuGroup>
                             {history.length > 0 ? (
                                 history.map((item, index) => (
-                                    <DropdownMenuItem key={index} className="cursor-pointer">{item.display}</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleSelectVault(item.raw)} key={index} className="cursor-pointer">{item.display}</DropdownMenuItem>
                                 ))
                             ) : <DropdownMenuItem className="pointer-events-none" variant="destructive">No history</DropdownMenuItem>}
                         </DropdownMenuGroup>

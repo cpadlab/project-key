@@ -56,4 +56,9 @@ export const backendAPI = {
         return await api.get_startup_route()
     },
 
+    setFilePath: async (path: string): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_file_path(path);
+    },
+
 }

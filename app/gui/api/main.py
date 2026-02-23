@@ -3,6 +3,7 @@ from typing import Optional, List, Dict
 
 from app.core.config import settings
 from app.controllers.kdbx.manager import generate_keyfile, create_new_vault
+from app.utils.logger import logger
 from app.controllers.history import (
     get_history as get_history_controller, truncate_paths_middle, clear_history as clear_history_controller
 )
@@ -58,7 +59,21 @@ class API:
         return generate_keyfile(path)
 
 
-    def get_startup_route(self) -> str:        
+    def get_startup_route(self) -> str:
         if settings.FILE_PATH:
             return "/login"
         return "/welcome"
+
+
+    def set_file_path(self, path: str) -> bool:
+        if not path:
+            logger.error("Attempted to set an empty FILE_PATH.")
+            return False
+
+        try:
+            settings.FILE_PATH = path
+            logger.info(f"Application FILE_PATH updated to: {path}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to update FILE_PATH setting: {e}")
+            return False
