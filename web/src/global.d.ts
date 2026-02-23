@@ -14,6 +14,7 @@ declare global {
                 set_file_path: (path: string) => Promise<boolean>;
                 select_file: (file_types: string[]) => Promise<string | null>;
                 open_vault: (password: string, keyfile: string | null) => Promise<boolean>;
+                create_group: (name: string, icon: number, color?: string) => Promise<boolean>;
             }
         }
     }

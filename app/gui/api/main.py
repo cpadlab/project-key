@@ -3,6 +3,8 @@ from typing import Optional, List, Dict
 from pathlib import Path
 
 from app.core.config import settings
+from app.controllers.kdbx.models import GroupModel
+from app.controllers.kdbx.operations import create_group as create_group_controller
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller
 )
@@ -125,4 +127,22 @@ class API:
                 return False
         except Exception as e:
             logger.error(f"Error while opening vault: {e}")
+            return False
+
+
+    def create_group(self, name: str, icon_id: int = 48, color: Optional[str] = None) -> bool:
+        try:
+            success = create_group_controller(group_data=GroupModel(
+                name=name, icon=icon_id, color=color
+            ))
+
+            if success:
+                logger.info(f"Group '{name}' successfully created.")
+                return True
+            else:
+                logger.warning(f"The group '{name}' could not be created.")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Fatal error creating group: {e}")
             return False

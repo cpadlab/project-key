@@ -86,4 +86,9 @@ export const backendAPI = {
         return await api.open_vault(password, parsedKeyfile)
     },
 
+    createGroup: async (name: string, icon: number = 48, color?: string): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.create_group(name, icon, color);
+    },
+
 }

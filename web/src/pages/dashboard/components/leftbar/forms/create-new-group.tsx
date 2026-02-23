@@ -4,15 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { SaveIcon } from "lucide-react"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group"
 import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field"
+import { Separator } from "@/components/ui/separator"
 
+import { backendAPI as backend } from "@/lib/api"
 import { ColorSelector } from "@/components/blocks/color-selector"
 import { IconSelector } from "@/components/blocks/icon-selector"
-import { Separator } from "@/components/ui/separator"
 
 const groupSchema = z.object({
     name: z.string().min(1, "The group name is required.").max(50, "Name is too long."),
@@ -40,14 +40,24 @@ export const CreateGroupDialog = ({ children }: CreateGroupDialogProps) => {
     })
 
     const onSubmit = async (data: GroupFormData) => {
+        const loadingId = toast.loading("Creating group...")
         try {
-            console.log("Datos del nuevo grupo listos para Python:", data)
-            toast.success("Group created successfully!")
-            form.reset()
-            setOpen(false)
+            const success = await backend.createGroup(
+                data.name, 
+                data.icon || 48, 
+                data.color
+            );
+
+            if (success) {
+                toast.success("Group created successfully!", { id: loadingId })
+                window.dispatchEvent(new CustomEvent('vault-changed'));
+                form.reset()
+                setOpen(false)
+            } else {
+                toast.error("Failed to create the group", { id: loadingId })
+            }
         } catch (error) {
-            console.error("Error creating group:", error)
-            toast.error("An unexpected error occurred.")
+            toast.error("An unexpected error occurred", { id: loadingId })
         }
     }
 
