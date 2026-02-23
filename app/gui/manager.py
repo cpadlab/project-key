@@ -8,6 +8,7 @@ from app.controllers.updater import check_for_updates
 from app.services.main import start_background_services
 from .api.main import API
 from app.controllers.kdbx.manager import close_current_vault
+from app.utils.file import validate_entry_url
 
 
 class GUIManager:
@@ -26,8 +27,9 @@ class GUIManager:
         :rtype: None
         """
         self.api = API()
-
+        
         self.entry_url = settings.ENTRY_URL
+        GUIManager._validate_resource(entry_url=self.entry_url)
 
         self.window = webview.create_window(
             title=settings.PROJECT_NAME,
@@ -42,6 +44,30 @@ class GUIManager:
         )
         
         self.api.set_window(self.window)
+
+
+    @staticmethod
+    def _validate_resource(entry_url: str = settings.ENTRY_URL) -> None:
+        """
+        Verify the availability of the application's entry point before 
+        initializing the interface.
+
+        :param entry_url: The URL or filesystem path to validate. 
+        :type entry_url: str
+        :return: None
+        :rtype: None
+        """
+        logger.info(f"Validating input resource: {entry_url}...")
+        if not validate_entry_url(entry_url):
+            if settings.DEV_TOOLS:
+                logger.critical(
+                    f"Entry point not found: '{entry_url}'. "
+                    "Tip: Since DEV_TOOLS is enabled, make sure you have run "
+                    "'npm install' and 'npm run build' in the frontend directory."
+                )
+            else:
+                logger.critical(f"Unable to access ENTRY_URL '{entry_url}'.")
+            sys.exit(1)
 
 
     def _on_startup(self) -> None:
