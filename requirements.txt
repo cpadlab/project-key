@@ -8,3 +8,4 @@ pandas==3.0.1
 matplotlib==3.10.8
 cryptography==46.0.5
 pywebview==6.1
+pystray==0.19.5
