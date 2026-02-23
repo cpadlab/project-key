@@ -22,6 +22,33 @@ def _get_history_path() -> Path:
     return resolved_path
 
 
+def remove_from_history(file_path: str) -> bool:
+    """
+    Removes a specific file path from the history if it exists.
+
+    :param file_path: The filesystem path to remove.
+    :type file_path: str
+    :return: True if the file was found and removed, False otherwise.
+    :rtype: bool
+    """
+    if not file_path:
+        return False
+
+    history = get_history()
+    if file_path in history:
+        history.remove(file_path)
+        try:
+            with open(_get_history_path(), "w", encoding="utf-8") as f:
+                json.dump(history, f, indent=4, ensure_ascii=False)
+            logger.debug(f"Removed invalid path from history: {file_path}")
+            return True
+        except IOError as e:
+            logger.error(f"Failed to update history file after removal: {e}")
+            return False
+            
+    return False
+
+
 def get_history() -> List[str]:
     """
     Retrieve the list of database file paths stored in the application history.
@@ -148,6 +175,7 @@ def load_last_history_path() -> bool:
             return True
         else:
             logger.debug(f"History path found ('{last_path}') but file no longer exists on disk.")
+            remove_from_history(file_path=last_path)
             
     logger.info("No database file specified and no valid history found.")
     return False

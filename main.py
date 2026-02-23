@@ -8,7 +8,7 @@ from app.utils.logger import logger, update_logger_level
 from app.utils.cli import get_args
 from app.core.config import settings
 from app.gui.manager import GUIManager
-from app.controllers.history import load_last_history_path
+from app.controllers.history import load_last_history_path, remove_from_history
 
 
 def main(arguments: argparse.Namespace) -> None:
@@ -43,6 +43,14 @@ def main(arguments: argparse.Namespace) -> None:
         else:
             logger.info("No database file specified explicitly. Checking history...")
             load_last_history_path()
+
+        if settings.FILE_PATH:
+            resolved_path = Path(settings.FILE_PATH).resolve()
+            if not resolved_path.exists():
+                logger.warning(f"The specified database file does not exist on disk: {resolved_path}")
+                remove_from_history(str(settings.FILE_PATH))
+                settings.FILE_PATH = None
+                logger.info("Cleared invalid FILE_PATH. Starting app without a loaded vault.")
 
         gui = GUIManager()
         gui.run()
