@@ -2,6 +2,7 @@ import { ToggleThemeSelector } from "@/components/blocks/toggle-theme-selector"
 import { VaultSelector } from "@/components/blocks/vault-selector"
 import { VersionBadge } from "@/components/blocks/version-badge"
 import { UnlockVault } from "./forms/unlock"
+import { CurrentVaultSelector } from "./components/current-vault-selector"
 
 const LoginPage = () => {
     return (
@@ -11,6 +12,7 @@ const LoginPage = () => {
 
             <div className="flex flex-col items-center">
                 <p className="text-center text-3xl font-bold mb-2">Unlock Vault</p>
+                <CurrentVaultSelector />
                 <p className="mb-4 text-center md:max-w-1/2 md:min-w-sm">Enter your master password and optionally select a key file to access your local database.</p>
                 <UnlockVault />
             </div>
