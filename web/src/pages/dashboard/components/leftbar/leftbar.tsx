@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, ChevronRight, PaletteIcon, HardDriveIcon, MonitorCheckIcon, SettingsIcon} from "lucide-react"
+import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, ChevronRight, PaletteIcon, HardDriveIcon, MonitorCheckIcon, SettingsIcon, ArrowLeftRightIcon} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,SidebarMenuSub,SidebarMenuSubItem, SidebarMenuSubButton } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -14,6 +14,7 @@ import GroupCard from "./cards/group-card/card"
 const settingsSubItems = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
     { title: "Security", href: "/settings/security", icon: ShieldCheckIcon },
+    { title: "Data Transfer", href: "/settings/data-transfer", icon: ArrowLeftRightIcon },
     { title: "Maintenance", href: "/settings/maintenance", icon: HardDriveIcon },
     { title: "Advanced", href: "/settings/advanced", icon: SettingsIcon },
     { title: "System", href: "/settings/system", icon: MonitorCheckIcon },

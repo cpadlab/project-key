@@ -3,6 +3,7 @@ from typing import Optional, List, Dict
 from pathlib import Path
 import logging
 
+from app.controllers.export import export_vault_data
 from app.utils.file import open_folder_in_explorer
 from app.core.config import settings, DEFAULT_INI_FILE
 from app.controllers.kdbx.models import GroupModel, EntryModel
@@ -370,3 +371,24 @@ class API:
         except Exception as e:
             logger.error(f"Error listing entries for group {group_name}: {e}")
             return []
+
+
+    def export_data(self, format: str, group_name: Optional[str] = None) -> bool:        
+        ext = format.lower()
+        scope_name = group_name if group_name else "full_vault"
+        default_filename = f"export_{scope_name.lower()}.{ext}"
+        
+        file_path = self.save_file_dialog(
+            default_filename=default_filename,
+            file_type=f"{ext.upper()} Files (*.{ext})"
+        )
+        
+        if not file_path:
+            logger.info("Export cancelled by the user (no route selected).")
+            return False
+            
+        try:
+            return export_vault_data(file_path, format=ext, group_name=group_name)
+        except Exception as e:
+            logger.error(f"Fatal error during export to {file_path}: {e}")
+            return False

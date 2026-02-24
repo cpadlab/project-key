@@ -4,7 +4,6 @@ import { CreateNewEntryDialog } from "./components/forms/create-new-entry/form"
 import { Grid2X2Icon, PlusIcon, TextAlignJustify } from "lucide-react"
 import { useState } from "react"
 import { ListView } from "./views/list/view"
-import { useGroup } from "@/contexts/group-context"
 import { OrderSelect } from "./components/order-select"
 
 type ViewMode = "list" | "grid";

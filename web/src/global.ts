@@ -72,6 +72,7 @@ declare global {
                 open_history_dir: () => Promise<boolean>;
                 open_config_dir: () => Promise<boolean>;
                 add_entry: (entry: any) => Promise<boolean>;
+                export_data: (format: string, groupName?: string) => Promise<boolean>;
             }
         }
     }

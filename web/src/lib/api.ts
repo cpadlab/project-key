@@ -210,4 +210,9 @@ export const backendAPI = {
         return await api.list_entries_by_group(groupName);
     },
 
+    exportData: async (format: string, groupName?: string): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.export_data(format, groupName);
+    },
+
 }

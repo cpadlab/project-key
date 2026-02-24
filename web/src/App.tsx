@@ -17,6 +17,7 @@ import MaintenanceSettings from "./pages/settings/sections/maintenance/page"
 import AdvancedSettings from "./pages/settings/sections/advanced/page"
 import SystemSettings from "./pages/settings/sections/system"
 import { GroupProvider } from "./contexts/group-context"
+import DataTransferSettings from "./pages/settings/sections/data-transfer/page"
 
 const GroupContextWrapper = () => (
     <GroupProvider>
@@ -46,6 +47,7 @@ function App() {
                                 <Route path="maintenance" element={<MaintenanceSettings />} />
                                 <Route path="advanced" element={<AdvancedSettings />} />
                                 <Route path="system" element={<SystemSettings />} />
+                                <Route path="data-transfer" element={<DataTransferSettings />} />
                             </Route>
                         </Route>
                     </Routes>

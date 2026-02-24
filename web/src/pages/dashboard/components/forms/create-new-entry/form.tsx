@@ -32,6 +32,7 @@ const entrySchema = z.object({
 type EntryFormData = z.infer<typeof entrySchema>
 
 export const CreateNewEntryDialog = ({ children }: { children: React.ReactNode }) => {
+    
     const [open, setOpen] = useState(false)
     const [groups, setGroups] = useState<GroupModel[]>([])
 

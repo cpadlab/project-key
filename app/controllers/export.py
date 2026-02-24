@@ -47,7 +47,7 @@ def export_vault_data(file_path: str, format: Literal["csv", "json"] = "csv", gr
         else:
             logger.info("Exporting all entries (excluding Recycle Bin)...")
             all_entries = list_all_entries()
-            entries = [e for e in all_entries if e.group != settings.RECYCLE_BIN_NAME]
+            entries = [e for e in all_entries if e.group != settings.RECYCLE_BIN_GROUP_NAME]
 
         if not entries:
             logger.warning("No entries found to export.")

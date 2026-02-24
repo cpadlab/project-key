@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { PaletteIcon, ShieldCheckIcon, HardDriveIcon, Settings2Icon, MonitorCheckIcon, LogOutIcon, LayoutDashboardIcon } from "lucide-react"
+import { PaletteIcon, ShieldCheckIcon, HardDriveIcon, Settings2Icon, MonitorCheckIcon, LogOutIcon, LayoutDashboardIcon, ArrowLeftRightIcon } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import type { FooterGroup } from "@/global"
@@ -8,6 +8,7 @@ import type { FooterGroup } from "@/global"
 export const settingsNav = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
     { title: "Security", href: "/settings/security", icon: ShieldCheckIcon },
+    { title: "Data Transfer", href: "/settings/data-transfer", icon: ArrowLeftRightIcon },
     { title: "Maintenance", href: "/settings/maintenance", icon: HardDriveIcon },
     { title: "Advanced", href: "/settings/advanced", icon: Settings2Icon },
     { title: "System", href: "/settings/system", icon: MonitorCheckIcon },
