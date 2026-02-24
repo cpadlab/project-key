@@ -27,6 +27,7 @@ declare global {
                 minimize_window: () => Promise<void>;
                 exit_application: () => Promise<void>;
                 close_session: () => Promise<boolean>;
+                is_session_active: () => Promise<boolean>;
             }
         }
     }

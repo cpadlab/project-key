@@ -11,7 +11,7 @@ from app.controllers.kdbx.operations import (
 )
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller,
-    close_current_vault
+    close_current_vault, get_active_vault
 )
 from app.utils.logger import logger
 from app.controllers.history import (
@@ -215,3 +215,7 @@ class API:
         except Exception as e:
             logger.error(f"Error closing session via API: {e}")
             return False
+
+
+    def is_session_active(self) -> bool:
+        return get_active_vault() is not None
