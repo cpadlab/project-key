@@ -173,4 +173,14 @@ export const backendAPI = {
         return await api.set_other_services_interval(interval);
     },
 
+    getLogLevel: async (): Promise<string> => {
+        const api = await getPywebviewApi();
+        return await api.get_log_level();
+    },
+
+    setLogLevel: async (level: string): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_log_level(level);
+    },
+
 }

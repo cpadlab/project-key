@@ -1,6 +1,7 @@
 import webview
 from typing import Optional, List, Dict
 from pathlib import Path
+import logging
 
 from app.core.config import settings
 from app.controllers.kdbx.models import GroupModel
@@ -299,4 +300,26 @@ class API:
             return settings.save_settings()
         except Exception as e:
             logger.error(f"Error saving other_services_interval: {e}")
+            return False
+
+
+    def get_log_level(self) -> str:
+        return settings.LOG_LEVEL.lower()
+
+
+    def set_log_level(self, level: str) -> bool:
+        valid_levels = ["debug", "info", "warning", "error", "critical"]
+        level = level.lower()
+        
+        if level not in valid_levels:
+            logger.error(f"Attempt to set invalid log level: {level}")
+            return False
+            
+        try:
+            settings.LOG_LEVEL = level
+            logging.getLogger(settings.PROJECT_NAME).setLevel(level.upper())
+            logger.info(f"Log level updated to: {level}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving log level: {e}")
             return False

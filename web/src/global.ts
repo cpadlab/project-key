@@ -58,6 +58,8 @@ declare global {
                 set_recycle_bin_retention_days: (days: number) => Promise<boolean>;
                 set_backup_max_count: (count: number) => Promise<boolean>;
                 set_other_services_interval: (interval: number) => Promise<boolean>;
+                get_log_level: () => Promise<string>;
+                set_log_level: (level: string) => Promise<boolean>;
             }
         }
     }
