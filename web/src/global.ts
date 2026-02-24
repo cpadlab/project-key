@@ -19,6 +19,13 @@ export interface FooterGroup {
     items: FooterItem[];
 }
 
+export interface GroupContextType {
+    activeGroup: string;
+    setActiveGroup: (name: string) => void;
+    entries: any[];
+    isLoading: boolean;
+}
+
 declare global {
     interface Window {
         pywebview: {

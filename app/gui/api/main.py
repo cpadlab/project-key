@@ -10,7 +10,8 @@ from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
     list_groups as list_groups_controller,
     delete_group as delete_group_controller,
-    add_entry as add_entry_controller
+    add_entry as add_entry_controller,
+    list_entries_by_group as list_entries_by_group_controllers
 )
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller,
@@ -352,3 +353,12 @@ class API:
         except Exception as e:
             logger.error(f"Backend error adding entry: {e}")
             return False
+
+    
+    def list_entries_by_group(self, group_name: str) -> List[Dict]:
+        try:
+            entries = list_entries_by_group_controllers(group_name)
+            return [e.model_dump(mode='json') for e in entries]
+        except Exception as e:
+            logger.error(f"Error listing entries for group {group_name}: {e}")
+            return []
