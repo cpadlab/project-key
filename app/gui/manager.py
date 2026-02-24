@@ -1,4 +1,5 @@
 import threading
+import threading
 import os
 import webview
 import pystray
@@ -30,6 +31,7 @@ class GUIManager:
         :rtype: None
         """
         self.api = API()
+        self.api.set_force_exit_callback(self.force_exit)
         self._is_shutting_down = False
         
         self.entry_url = settings.ENTRY_URL
@@ -83,6 +85,8 @@ class GUIManager:
         :return: None
         :rtype: None
         """
+        self._setup_tray()
+        
         logger.info("Graphical interface ready. Starting background services...")
 
         update_thread = threading.Thread(
@@ -115,12 +119,6 @@ class GUIManager:
 
 
     def _on_closing(self) -> bool:
-        """
-        Intercept the window closing event. 
-
-        :return: True to proceed with closing the window, False to cancel and hide.
-        :rtype: bool
-        """
         if self._is_shutting_down:
             return True 
 
@@ -137,7 +135,8 @@ class GUIManager:
             return True
 
         logger.info("Asking the user to close...")
-        self.window.evaluate_js("window.dispatchEvent(new CustomEvent('show-close-dialog'))")
+        threading.Timer(0.1, lambda: self.window.evaluate_js("window.dispatchEvent(new CustomEvent('show-close-dialog'))")).start()
+        
         return False
 
 
@@ -160,8 +159,6 @@ class GUIManager:
         self.window.events.closed += self._on_closed
         self.window.events.closing += self._on_closing
 
-        self._setup_tray()
-
         absolute_icon_path = str((_BASE_DIR / settings.ICON).resolve())
         logger.debug(f"Loading window icon from absolute path: {absolute_icon_path}")
 
@@ -181,12 +178,16 @@ class GUIManager:
         :rtype: None
         """
         def show_app(icon, item):
-            self.window.show()
+            try:
+                self.window.show()
+            except Exception as e:
+                logger.error(f"Error mostrando ventana desde tray: {e}")
 
         def hide_app(icon, item):
             self.window.hide()
 
         def exit_app(icon, item):
+            logger.info("Exit requested from tray.")
             self._is_shutting_down = True
             icon.stop()
             self.window.destroy()

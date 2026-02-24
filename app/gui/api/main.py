@@ -27,6 +27,7 @@ class API:
 
     def __init__(self):
         self._window: Optional[webview.Window] = None
+        self._on_force_exit = None
 
 
     def set_window(self, window: webview.Window):
@@ -194,5 +195,12 @@ class API:
 
 
     def exit_application(self):
-        if self._window:
-            self._window.evaluate_js("window.dispatchEvent(new CustomEvent('app-executing-exit'))")
+        logger.info("Frontend requested to close the application.")
+        if self._on_force_exit:
+            self._on_force_exit()
+        elif self._window:
+            self._window.destroy()
+
+
+    def set_force_exit_callback(self, callback):
+        self._on_force_exit = callback
