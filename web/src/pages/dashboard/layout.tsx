@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
 
@@ -42,7 +42,9 @@ const DashboardLayout = () => {
     return (
         <SidebarProvider>
             <Leftbar />
-            <Outlet />
+            <SidebarInset>
+                <Outlet />
+            </SidebarInset>
         </SidebarProvider>
     )
 }

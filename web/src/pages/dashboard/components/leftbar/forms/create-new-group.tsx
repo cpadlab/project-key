@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group"
 import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field"
 import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { backendAPI as backend } from "@/lib/api"
 import { ColorSelector } from "@/components/blocks/color-selector"
@@ -73,54 +74,58 @@ export const CreateGroupDialog = ({ children }: CreateGroupDialogProps) => {
                 {children}
             </DialogTrigger>
             
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Create New Group</DialogTitle>
-                    <DialogDescription>
-                        Organize your vault by creating a new category group.
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="sm:max-w-md max-h-[95vh] overflow-hidden">
+                <ScrollArea className="sm:max-w-md max-h-[95vh] overflow-y-auto pb-8">
 
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="space-y-4 pt-2 pb-4">
-                            
-                        <Controller name="name" control={form.control} render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="name">Group Name</FieldLabel>
-                                <InputGroup>
-                                    <InputGroupInput {...field} id="name" placeholder="e.g. Social Media, Banking..." aria-invalid={fieldState.invalid}/>
-                                </InputGroup>
-                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                            </Field>
-                        )} />
+                    <DialogHeader>
+                        <DialogTitle>Create New Group</DialogTitle>
+                        <DialogDescription>
+                            Organize your vault by creating a new category group.
+                        </DialogDescription>
+                    </DialogHeader>
 
-                        <Controller name="color" control={form.control} render={({ field }) => (
-                            <Field>
-                                <FieldLabel>Group Color (Optional)</FieldLabel>
-                                <FieldDescription>A custom color makes the group easier to spot.</FieldDescription>
-                                <ColorSelector value={field.value} onChange={field.onChange} />
-                            </Field>
-                        )} />
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <div className="space-y-4 pt-2 pb-4">
+                                
+                            <Controller name="name" control={form.control} render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="name">Group Name</FieldLabel>
+                                    <InputGroup>
+                                        <InputGroupInput {...field} id="name" placeholder="e.g. Social Media, Banking..." aria-invalid={fieldState.invalid}/>
+                                    </InputGroup>
+                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                </Field>
+                            )} />
 
-                        <Controller name="icon" control={form.control} render={({ field }) => (
-                            <Field>
-                                <FieldLabel>Group Icon</FieldLabel>
-                                <IconSelector value={field.value} onChange={field.onChange} />
-                            </Field>
-                        )} />
+                            <Controller name="color" control={form.control} render={({ field }) => (
+                                <Field>
+                                    <FieldLabel>Group Color (Optional)</FieldLabel>
+                                    <FieldDescription>A custom color makes the group easier to spot.</FieldDescription>
+                                    <ColorSelector value={field.value} onChange={field.onChange} />
+                                </Field>
+                            )} />
 
-                    </div>
+                            <Controller name="icon" control={form.control} render={({ field }) => (
+                                <Field>
+                                    <FieldLabel>Group Icon</FieldLabel>
+                                    <IconSelector value={field.value} onChange={field.onChange} />
+                                </Field>
+                            )} />
 
-                    <Separator />
- 
-                    <div className="flex justify-end pt-4">
-                        <Button type="submit">
-                            <SaveIcon className="w-4 h-4" />
-                            <span>Create Group</span>
-                        </Button>
-                    </div>
+                        </div>
 
-                </form>
+                        <Separator />
+    
+                        <div className="flex justify-end pt-4">
+                            <Button type="submit">
+                                <SaveIcon className="w-4 h-4" />
+                                <span>Create Group</span>
+                            </Button>
+                        </div>
+
+                    </form>
+                
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     )
