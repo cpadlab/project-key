@@ -3,7 +3,6 @@ import { DownloadIcon, FileJsonIcon, FileSpreadsheetIcon, ShieldAlertIcon, Arrow
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
@@ -42,21 +41,19 @@ export const ExportCard = () => {
     }
 
     return (
-        <Card className="gap-4">
+        <div className="gap-4">
 
-            <CardHeader>
-                <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-md bg-primary/10 text-primary">
-                        <DownloadIcon className="size-5" />
-                    </div>
-                    <div>
-                        <CardTitle>Export Data</CardTitle>
-                        <CardDescription>Extract your credentials into an unencrypted file.</CardDescription>
-                    </div>
+            <div className="flex items-center gap-2">
+                <div className="p-2 rounded-md bg-primary/10 text-primary">
+                    <DownloadIcon className="size-5" />
                 </div>
-            </CardHeader>
+                <div className="text-sm">
+                    <p><strong>Export Data</strong></p>
+                    <p>Extract your credentials into an unencrypted file.</p>
+                </div>
+            </div>
             
-            <CardContent className="space-y-4">
+            <div className="space-y-4 mt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     <div className="space-y-2">
@@ -118,7 +115,7 @@ export const ExportCard = () => {
                     </Button>
                 </div>
 
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }

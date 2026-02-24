@@ -15,13 +15,14 @@ const DataTransferSettings = () => {
                     <BreadcrumbRoute page="Data Transfer" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">Data transfer</h2>
-                <p className="text-sm text-muted-foreground">Technical system configurations and diagnostics.</p>
+                <p className="text-sm text-muted-foreground">Import entries from other password managers or export your vault data to portable formats.</p>
             </div>
 
             <Separator />
 
             <div className="space-y-4">
                 <ExportCard />
+                <Separator />
             </div>
         </div>
     )

@@ -7,6 +7,9 @@ from app.controllers.export import export_vault_data
 from app.utils.file import open_folder_in_explorer
 from app.core.config import settings, DEFAULT_INI_FILE
 from app.controllers.kdbx.models import GroupModel, EntryModel
+from app.controllers.imports import (
+    execute_final_import, parse_csv_to_models
+)
 from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
     list_groups as list_groups_controller,
@@ -392,3 +395,20 @@ class API:
         except Exception as e:
             logger.error(f"Fatal error during export to {file_path}: {e}")
             return False
+        
+
+    def select_import_file(self) -> Optional[str]:
+        return self.select_file(file_types=('CSV files (*.csv)', 'All files (*.*)'))
+
+
+    def preview_csv_import(self, file_path: str, preset: str) -> List[Dict]:
+        try:
+            entries = parse_csv_to_models(file_path, preset_name=preset)
+            return [e.model_dump(mode='json') for e in entries]
+        except Exception as e:
+            logger.error(f"Error en preview de importación: {e}")
+            return []
+
+    def run_import(self, entries_data: List[Dict], target_group: str) -> Dict[str, int]:
+        entries = [EntryModel(**data) for data in entries_data]
+        return execute_final_import(entries, target_group)
