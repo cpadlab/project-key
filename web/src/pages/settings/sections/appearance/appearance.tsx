@@ -21,8 +21,8 @@ const AppearanceSettings = () => {
             <Separator />
 
             <div className="space-y-4">
-                <SelectTheme />
                 <OnClose />
+                <SelectTheme />
             </div>
             
         </div>
