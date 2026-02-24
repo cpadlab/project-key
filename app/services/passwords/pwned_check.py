@@ -6,6 +6,7 @@ import urllib.request
 from app.core.config import settings
 from app.controllers.kdbx.operations import list_all_entries, update_entry
 from app.controllers.kdbx.models import EntryModel
+from app.controllers.kdbx.manager import get_active_vault
 
 logger = logging.getLogger(settings.PROJECT_NAME)
 
@@ -44,6 +45,10 @@ def pwned_password_audit_task() -> None:
     :rtype: None
     """
     while True:
+        if not get_active_vault():
+            time.sleep(settings.PASSWORD_AUDIT_INTERVAL)
+            continue
+        
         entries = list_all_entries()
         if not entries:
             time.sleep(settings.PASSWORD_AUDIT_INTERVAL)

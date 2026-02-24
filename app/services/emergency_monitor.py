@@ -6,6 +6,7 @@ from pathlib import Path
 from app.core.config import settings
 from app.controllers.emergency import is_emergency_triggered
 from app.controllers.export import export_vault_data
+from app.controllers.kdbx.manager import get_active_vault
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
@@ -19,6 +20,10 @@ def emergency_monitor_task() -> None:
     :rtype: None
     """
     while True:
+        if not get_active_vault():
+            time.sleep(settings.EMERGENCY_CHECK_INTERVAL)
+            continue
+        
         if is_emergency_triggered():
             logger.critical("EMERGENCY TRIGGERED: Inactivity threshold exceeded.")
 

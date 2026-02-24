@@ -6,6 +6,7 @@ from app.core.config import settings
 from app.controllers.kdbx.operations import list_all_entries, update_entry
 from app.controllers.passwords import check_password_strength
 from app.controllers.kdbx.models import EntryModel
+from app.controllers.kdbx.manager import get_active_vault
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
@@ -37,6 +38,10 @@ def weak_password_audit_task() -> None:
     :rtype: None
     """
     while True:
+        if not get_active_vault():
+            time.sleep(settings.PASSWORD_AUDIT_INTERVAL)
+            continue
+        
         logger.debug("Executing scheduled weak password audit...")
         entries = list_all_entries()
         

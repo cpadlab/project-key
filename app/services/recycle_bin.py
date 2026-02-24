@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from app.core.config import settings
 from app.controllers.kdbx.operations import list_recycle_bin_entries, delete_entry
+from app.controllers.kdbx.manager import get_active_vault
 
 
 logger = logging.getLogger(settings.PROJECT_NAME)
@@ -18,6 +19,10 @@ def auto_empty_recycle_bin_task() -> None:
     :rtype: None
     """
     while True:
+        if not get_active_vault():
+            time.sleep(settings.OTHER_SERVICES_INTERVAL)
+            continue
+        
         logger.debug("Checking Recycle Bin for expired entries...")
         entries = list_recycle_bin_entries()
         now = datetime.now()
