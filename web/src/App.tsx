@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom"
 import { Toaster } from "@/components/ui/sonner" 
 
 import { ThemeProvider } from "./contexts/theme-context"
@@ -16,30 +16,42 @@ import SecuritySettings from "./pages/settings/sections/security/page"
 import MaintenanceSettings from "./pages/settings/sections/maintenance/page"
 import AdvancedSettings from "./pages/settings/sections/advanced/page"
 import SystemSettings from "./pages/settings/sections/system"
+import { GroupProvider } from "./contexts/group-context"
+
+const GroupContextWrapper = () => (
+    <GroupProvider>
+        <Outlet />
+    </GroupProvider>
+);
 
 function App() {
     return (
         <ThemeProvider>
-            
-            <Router>
-                <Routes>
-                    <Route path="/" element={<RouteDirector />} />
-                    <Route path="/welcome" element={<WelcomePage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/logout" element={<LogoutPage />} />
-                    <Route element={<DashboardLayout />}>
-                        <Route path="/dashboard" element={<DashboardPage />} />
-                    </Route>
-                    <Route path="/settings" element={<SettingsLayout />}>
-                        <Route index element={<SettingsPage />} />
-                        <Route path="appearance" element={<AppearanceSettings />} />
-                        <Route path="security" element={<SecuritySettings />} />
-                        <Route path="maintenance" element={<MaintenanceSettings />} />
-                        <Route path="advanced" element={<AdvancedSettings />} />
-                        <Route path="system" element={<SystemSettings />} />
-                    </Route>
-                </Routes>
-            </Router>
+            <GroupProvider>
+
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<RouteDirector />} />
+                        <Route path="/welcome" element={<WelcomePage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/logout" element={<LogoutPage />} />
+                        <Route element={<GroupContextWrapper />}>
+                            <Route element={<DashboardLayout />}>
+                                <Route path="/dashboard" element={<DashboardPage />} />
+                            </Route>
+                            <Route path="/settings" element={<SettingsLayout />}>
+                                <Route index element={<SettingsPage />} />
+                                <Route path="appearance" element={<AppearanceSettings />} />
+                                <Route path="security" element={<SecuritySettings />} />
+                                <Route path="maintenance" element={<MaintenanceSettings />} />
+                                <Route path="advanced" element={<AdvancedSettings />} />
+                                <Route path="system" element={<SystemSettings />} />
+                            </Route>
+                        </Route>
+                    </Routes>
+                </Router>
+
+            </GroupProvider>
 
             <Toaster />
             <CloseConfirmationDialog />

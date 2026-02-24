@@ -235,7 +235,6 @@ class Settings(BaseSettings):
         path_to_save = self.ACTIVE_CONFIG_PATH or str(DEFAULT_INI_FILE)
         
         try:
-            # Importante: Usamos una instancia limpia para evitar herencias raras
             config = configparser.ConfigParser()
             
             if Path(path_to_save).exists():
@@ -247,7 +246,6 @@ class Settings(BaseSettings):
                 
                 val = getattr(self, field_name)
                 
-                # Formateo de tipos
                 if isinstance(val, bool):
                     str_val = str(val).lower()
                 elif val is None:
@@ -255,12 +253,8 @@ class Settings(BaseSettings):
                 else:
                     str_val = str(val)
 
-                # Obtener sección y clave del mapa (Ahora sí coincidirán las mayúsculas)
                 section, key = SECTION_MAP.get(field_name, ("DEFAULT", field_name.lower()))
 
-                # --- LÓGICA ANTI-DUPLICADOS ---
-                # Si vamos a poner la clave en una sección que NO es DEFAULT, 
-                # nos aseguramos de borrarla de DEFAULT para que no se repita arriba.
                 if section != "DEFAULT":
                     if not config.has_section(section):
                         config.add_section(section)
