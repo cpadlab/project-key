@@ -2,14 +2,7 @@ import { useEffect, useState } from "react"
 import { DatabaseIcon, FolderOpenIcon, ChevronDownIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 import { backendAPI } from "@/lib/api"
 import { useVaultSelection } from "@/hooks/use-vault-selection"

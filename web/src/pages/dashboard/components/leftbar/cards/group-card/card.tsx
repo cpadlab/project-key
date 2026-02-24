@@ -24,10 +24,10 @@ const GroupCard = ({ data }: GroupCardProps) => {
     };
 
     return (
-        <div className={cn("group/card flex items-center justify-between p-1 mb-1 rounded-lg transition-colors",isActive ? "bg-accent text-accent-foreground shadow-sm" : "bg-card text-card-foreground hover:bg-accent/50")}>
+        <div className={cn("group/card flex items-center justify-between p-1 mb-1 rounded-lg transition-colors", isActive ? "bg-accent text-accent-foreground" : "bg-card text-card-foreground hover:bg-accent/50")}>
             
             <button onClick={handleGroupClick} className="flex items-center gap-3 cursor-pointer flex-1 text-left outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-md p-1">
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-white shadow-sm" style={{ backgroundColor: data.color || 'var(--color-primary)' }} >
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-white" style={{ backgroundColor: data.color || 'var(--color-primary)' }} >
                     <IconComponent className="h-4 w-4" />
                 </div>    
                 <div className="flex flex-col overflow-hidden">
