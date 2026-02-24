@@ -3,7 +3,8 @@ from typing import Optional, List, Dict
 from pathlib import Path
 import logging
 
-from app.core.config import settings
+from app.utils.file import open_folder_in_explorer
+from app.core.config import settings, DEFAULT_INI_FILE
 from app.controllers.kdbx.models import GroupModel
 from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
@@ -323,3 +324,20 @@ class API:
         except Exception as e:
             logger.error(f"Error saving log level: {e}")
             return False
+
+
+    def open_log_dir(self) -> bool:
+        return open_folder_in_explorer(settings.LOG_DIR)
+
+
+    def open_backup_dir(self) -> bool:
+        return open_folder_in_explorer(settings.BACKUP_DIR)
+
+
+    def open_history_dir(self) -> bool:
+        return open_folder_in_explorer(settings.HISTORY_FILENAME)
+
+
+    def open_config_dir(self) -> bool:
+        path = settings.ACTIVE_CONFIG_PATH or str(DEFAULT_INI_FILE)
+        return open_folder_in_explorer(path)

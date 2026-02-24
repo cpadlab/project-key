@@ -20,7 +20,7 @@ const SettingsPage = () => {
             
             <Separator />
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-3 gap-4">
                 {settingsNav.map((item, index) => (
                     <Link to={item.href} key={index} className="gap-4 text-sm font-semibold px-6 py-4 bg-card flex items-center cursor-pointer rounded-sm hover:bg-card/70 transition-all duration-300 border">
                         <div className="rounded-full bg-primary/10 p-2 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/20">

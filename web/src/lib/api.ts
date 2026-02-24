@@ -183,4 +183,21 @@ export const backendAPI = {
         return await api.set_log_level(level);
     },
 
+    openLogDir: async () => {
+        const api = await getPywebviewApi();
+        return await api.open_log_dir();
+    },
+    openBackupDir: async () => {
+        const api = await getPywebviewApi();
+        return await api.open_backup_dir();
+    },
+    openHistoryDir: async () => {
+        const api = await getPywebviewApi();
+        return await api.open_history_dir();
+    },
+    openConfigDir: async () => {
+        const api = await getPywebviewApi();
+        return await api.open_config_dir();
+    },
+
 }

@@ -60,6 +60,10 @@ declare global {
                 set_other_services_interval: (interval: number) => Promise<boolean>;
                 get_log_level: () => Promise<string>;
                 set_log_level: (level: string) => Promise<boolean>;
+                open_log_dir: () => Promise<boolean>;
+                open_backup_dir: () => Promise<boolean>;
+                open_history_dir: () => Promise<boolean>;
+                open_config_dir: () => Promise<boolean>;
             }
         }
     }
