@@ -119,6 +119,7 @@ class Settings(BaseSettings):
     ENTRY_URL: str = Field(default="build/index.html")
     ICON: str = 'icon.ico'
     CLOSE_BEHAVIOR: str = Field(default="ask")
+    ACTIVE_CONFIG_PATH: Optional[str] = Field(default=None, exclude=True)
 
     model_config = SettingsConfigDict(
         extra="ignore",
@@ -163,6 +164,8 @@ class Settings(BaseSettings):
                 if val is not None:
                     setattr(self, field_name, val)
 
+        self.ACTIVE_CONFIG_PATH = str(ini_path)
+
 
     def setup_with_args(self, args: argparse.Namespace) -> None:
         """
@@ -175,6 +178,35 @@ class Settings(BaseSettings):
         for field_name in self.model_fields.keys():
             if field_name.lower() in args_dict and args_dict[field_name.lower()] is not None:
                 setattr(self, field_name, args_dict[field_name.lower()])
+
+
+    def save_settings(self) -> bool:
+        """
+        Persist the current application settings to the active INI configuration file.
+
+        :return: True if the settings were successfully saved to disk, False otherwise.
+        :rtype: bool
+        """
+        path_to_save = self.ACTIVE_CONFIG_PATH or str(DEFAULT_INI_FILE)
+        
+        try:
+            config = configparser.ConfigParser()
+            if Path(path_to_save).exists():
+                config.read(path_to_save, encoding="utf-8")
+
+            for field_name, field_info in self.model_fields.items():
+                if field_name == "ACTIVE_CONFIG_PATH":
+                    continue
+                val = getattr(self, field_name)
+                config['DEFAULT'][field_name.lower()] = str(val) if val is not None else ""
+
+            with open(path_to_save, 'w', encoding="utf-8") as configfile:
+                config.write(configfile)
+            return True
+
+        except Exception as e:
+            logger.error(f"Error persisting configuration to {path_to_save}: {e}")
+            return False
 
 
 # Global settings singleton

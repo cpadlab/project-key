@@ -180,9 +180,11 @@ class API:
     def set_close_behavior(self, behavior: str) -> bool:
         if behavior in ['ask', 'minimize', 'exit']:
             settings.CLOSE_BEHAVIOR = behavior
-            logger.info(f"Preferencia de cierre actualizada a: {behavior}")
-            # Aquí podrías añadir lógica para persistir el .ini si lo deseas
-            return True
+            logger.info(f"Closing preference updated to: {behavior}")
+            success = settings.save_settings()
+            if success:
+                logger.info("Settings saved to disk successfully.")
+            return success
         return False
 
 
