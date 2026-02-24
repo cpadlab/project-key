@@ -358,7 +358,15 @@ class API:
     def list_entries_by_group(self, group_name: str) -> List[Dict]:
         try:
             entries = list_entries_by_group_controllers(group_name)
-            return [e.model_dump(mode='json') for e in entries]
+            
+            cleaned_entries = []
+            for e in entries:
+                entry_dict = e.model_dump(mode='json')
+                entry_dict['password'] = bool(entry_dict.get('password'))
+                entry_dict['totp_seed'] = bool(entry_dict.get('totp_seed'))
+                cleaned_entries.append(entry_dict)
+                
+            return cleaned_entries
         except Exception as e:
             logger.error(f"Error listing entries for group {group_name}: {e}")
             return []
