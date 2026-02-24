@@ -9,6 +9,8 @@ import DashboardLayout from "./pages/dashboard/layout"
 import DashboardPage from "./pages/dashboard/page"
 import { CloseConfirmationDialog } from "./components/blocks/dialogs/close-confirmation-dialog"
 import LogoutPage from "./pages/logout"
+import SettingsLayout from "./pages/settings/layout"
+import AppearanceSettings from "./pages/settings/sections/appearance/appearance"
 
 function App() {
     return (
@@ -22,6 +24,9 @@ function App() {
                     <Route path="/logout" element={<LogoutPage />} />
                     <Route element={<DashboardLayout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
+                    </Route>
+                    <Route path="/settings" element={<SettingsLayout />}>
+                        <Route path="appearance" element={<AppearanceSettings />} />
                     </Route>
                 </Routes>
             </Router>

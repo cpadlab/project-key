@@ -82,7 +82,7 @@ export const CreateGroupDialog = ({ children }: CreateGroupDialogProps) => {
                 </DialogHeader>
 
                 <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="space-y-6 pt-2 pb-4">
+                    <div className="space-y-4 pt-2 pb-4">
                             
                         <Controller name="name" control={form.control} render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
