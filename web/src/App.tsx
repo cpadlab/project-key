@@ -12,6 +12,7 @@ import LogoutPage from "./pages/logout"
 import SettingsLayout from "./pages/settings/layout"
 import AppearanceSettings from "./pages/settings/sections/appearance/page"
 import SettingsPage from "./pages/settings/page"
+import SecuritySettings from "./pages/settings/sections/security/page"
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/settings" element={<SettingsLayout />}>
                         <Route index element={<SettingsPage />} />
                         <Route path="appearance" element={<AppearanceSettings />} />
+                        <Route path="security" element={<SecuritySettings />} />
                     </Route>
                 </Routes>
             </Router>
