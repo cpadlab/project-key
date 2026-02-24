@@ -7,6 +7,7 @@ import LoginPage from "./pages/login/page"
 import RouteDirector from "./pages/route-director"
 import DashboardLayout from "./pages/dashboard/layout"
 import DashboardPage from "./pages/dashboard/page"
+import { CloseConfirmationDialog } from "./components/blocks/dialogs/close-confirmation-dialog"
 
 function App() {
     return (
@@ -24,6 +25,8 @@ function App() {
             </Router>
 
             <Toaster />
+            <CloseConfirmationDialog />
+
         </ThemeProvider>
     )
 }

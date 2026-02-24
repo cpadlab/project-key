@@ -23,6 +23,9 @@ declare global {
                 open_vault: (password: string, keyfile: string | null) => Promise<boolean>;
                 create_group: (name: string, icon: number, color?: string) => Promise<boolean>;
                 list_groups(): Promise<GroupModel[]>;
+                set_close_behavior: (behavior: string) => Promise<boolean>;
+                minimize_window: () => Promise<void>;
+                exit_application: () => Promise<void>;
             }
         }
     }

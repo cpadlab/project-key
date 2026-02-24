@@ -102,5 +102,20 @@ export const backendAPI = {
         const api = await getPywebviewApi();
         return await api.delete_group(name, force, moveTo);
     },
+    
+    setCloseBehavior: async (behavior: 'ask' | 'minimize' | 'exit'): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_close_behavior(behavior);
+    },
+
+    minimizeWindow: async (): Promise<void> => {
+        const api = await getPywebviewApi();
+        return await api.minimize_window();
+    },
+
+    exitApplication: async (): Promise<void> => {
+        const api = await getPywebviewApi();
+        return await api.exit_application();
+    },
 
 }
