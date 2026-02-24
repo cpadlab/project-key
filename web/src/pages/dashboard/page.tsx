@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { CreateNewEntryDialog } from "./components/forms/create-new-entry/form"
-import { Grid2X2Icon, PlusIcon, TextAlignJustify, ArrowDownZAIcon, ArrowUpAZIcon, ClockArrowUpIcon, ClockArrowDownIcon } from "lucide-react"
+import { Grid2X2Icon, PlusIcon, TextAlignJustify } from "lucide-react"
 import { useState } from "react"
 import { ListView } from "./views/list/view"
 import { useGroup } from "@/contexts/group-context"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { OrderSelect } from "./components/order-select"
 
 type ViewMode = "list" | "grid";
 
 const DashboardPage = () => {
 
     const [view, setView] = useState<ViewMode>("list");
-    const { sortOrder, setSortOrder } = useGroup()
 
     return (
         <div className="p-4 pt-0">
@@ -23,17 +22,7 @@ const DashboardPage = () => {
 
                 <div className="flex items-center gap-2">
 
-                    <Select value={sortOrder} onValueChange={setSortOrder}>
-                        <SelectTrigger size="sm">
-                            <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent align="center">
-                            <SelectItem value="az"><ArrowUpAZIcon />A-Z</SelectItem>
-                            <SelectItem value="za"><ArrowDownZAIcon />Z-A</SelectItem>
-                            <SelectItem value="newest"><ClockArrowUpIcon />Newest</SelectItem>
-                            <SelectItem value="oldest"><ClockArrowDownIcon />Oldest</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <OrderSelect />
 
                     <Button onClick={() => setView(view === "list" ? "grid" : "list")} variant="secondary" size="icon-sm">
                         {view === "list" ? <Grid2X2Icon className="size-4" /> : <TextAlignJustify className="size-4" />}
