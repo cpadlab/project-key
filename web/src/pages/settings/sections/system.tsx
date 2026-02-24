@@ -92,7 +92,7 @@ const SystemSettings = () => {
                 ))}
             </div>
 
-            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-4 text-xs text-muted-foreground max-w-2xl">
+            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-4 text-xs text-muted-foreground">
                 <p className="flex flex-col gap-2">
                     <span className="font-bold text-yellow-600 dark:text-yellow-400">Note:</span>
                     <span>Modification or deletion of files within these directories can cause instability or data loss. Use with caution.</span>

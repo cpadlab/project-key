@@ -19,7 +19,7 @@ from app.utils.logger import logger
 from app.controllers.history import (
     get_history as get_history_controller, truncate_paths_middle, 
     clear_history as clear_history_controller, update_history,
-    remove_from_history
+    remove_from_history, _get_history_path
 )
 
 
@@ -335,7 +335,7 @@ class API:
 
 
     def open_history_dir(self) -> bool:
-        return open_folder_in_explorer(settings.HISTORY_FILENAME)
+        return open_folder_in_explorer(_get_history_path())
 
 
     def open_config_dir(self) -> bool:
