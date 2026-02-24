@@ -1,22 +1,31 @@
-import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
+import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, ChevronRight, PaletteIcon, HardDriveIcon, MonitorCheckIcon, SettingsIcon} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,SidebarMenuSub,SidebarMenuSubItem, SidebarMenuSubButton } from "@/components/ui/sidebar"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Separator } from "@/components/ui/separator"
 
 import { CreateGroupDialog } from "./forms/create-new-group"
-import { backendAPI as backend } from '@/lib/api';
-import type { FooterGroup, GroupModel } from "@/global"
+import { backendAPI as backend } from '@/lib/api'
+import type { GroupModel } from "@/global"
 import GroupCard from "./cards/group-card/card"
-import { Link } from "react-router-dom"
-import { Separator } from "@/components/ui/separator"
+
+const settingsSubItems = [
+    { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
+    { title: "Security", href: "/settings/security", icon: ShieldCheckIcon },
+    { title: "Maintenance", href: "/settings/maintenance", icon: HardDriveIcon },
+    { title: "Advanced", href: "/settings/advanced", icon: SettingsIcon },
+    { title: "System", href: "/settings/system", icon: MonitorCheckIcon },
+]
 
 const Leftbar = () => {
 
     const [groups, setGroups] = useState<GroupModel[]>([]);
+    const location = useLocation();
 
     const fetchGroups = async () => {
         try {
-            console.log("Fetching groups due to vault change...");
             const data = await backend.listGroups();
             setGroups(data);                
         } catch (error) {
@@ -27,44 +36,15 @@ const Leftbar = () => {
     useEffect(() => {
         fetchGroups();
         window.addEventListener('vault-changed', fetchGroups);
-        return () => {
-            window.removeEventListener('vault-changed', fetchGroups);
-        };
+        return () => window.removeEventListener('vault-changed', fetchGroups);
     }, []);
-
-    const data: FooterGroup[] = [
-        {
-            items: [
-                {
-                    icon: ShieldCheckIcon,
-                    label: "Pass Monitor",
-                    href: "/monitor",
-                },
-                {
-                    icon: Settings2Icon,
-                    label: "Settings",
-                    href: "/settings/appearance",
-                },
-            ]
-        },
-        {
-            items: [
-                {
-                    icon: LogOutIcon,
-                    label: "Close Session",
-                    href: "/logout",
-                    className: "text-destructive hover:text-destructive hover:bg-destructive/10"
-                },
-            ]
-        }
-    ]
 
     return (
         <Sidebar>
 
             <SidebarContent>
                 <SidebarGroup>
-                    <div className="flex items-center gap-2 justify-between">
+                    <div className="flex items-center gap-2 justify-between mb-2">
                         <SidebarGroupLabel>Groups</SidebarGroupLabel>
                         <CreateGroupDialog>
                             <Button size="icon-xs" variant="secondary" className="text-primary">
@@ -73,33 +53,66 @@ const Leftbar = () => {
                         </CreateGroupDialog>
                     </div>
                     {groups && groups.length > 0 && (
-                        groups.map((item, index) => (
-                            <GroupCard data={item} key={index} />
-                        ))
+                        <div className="space-y-1">
+                            {groups.map((item, index) => (
+                                <GroupCard data={item} key={index} />
+                            ))}
+                        </div>
                     )}
                 </SidebarGroup>
             </SidebarContent>
 
-
             <SidebarFooter>
+
                 <Separator />
-                {data.map((group, idx_group) => (
-                    <>
-                        <SidebarMenu key={idx_group}>
-                            {group.items.map((item, idx_item) => (
-                                <SidebarMenuItem key={idx_item}>
-                                    <SidebarMenuButton className={item.className} asChild tooltip="Pass Monitor">
-                                        <Link to={item.href}>
-                                            <item.icon />
-                                            <span>{item.label}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                        {idx_group < data.length - 1 && <Separator />}
-                    </>
-                ))}
+                <SidebarMenu>
+                    
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild tooltip="Pass Monitor" isActive={location.pathname === "/monitor"}>
+                            <Link to="/monitor">
+                                <ShieldCheckIcon />
+                                <span>Pass Monitor</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+
+                    <Collapsible asChild className="group/collapsible" defaultOpen={location.pathname.startsWith("/settings")}>
+                        <SidebarMenuItem>
+                            <CollapsibleTrigger asChild>
+                                <SidebarMenuButton tooltip="Settings">
+                                    <Settings2Icon />
+                                    <span>Settings</span>
+                                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                </SidebarMenuButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                                <SidebarMenuSub>
+                                    {settingsSubItems.map((sub) => (
+                                        <SidebarMenuSubItem key={sub.href}>
+                                            <SidebarMenuSubButton asChild isActive={location.pathname === sub.href}>
+                                                <Link to={sub.href}>
+                                                    <sub.icon className="size-4" />
+                                                    <span>{sub.title}</span>
+                                                </Link>
+                                            </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                    ))}
+                                </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </SidebarMenuItem>
+                    </Collapsible>
+
+                </SidebarMenu>
+
+                <Separator />
+
+                <SidebarMenu><SidebarMenuItem><SidebarMenuButton asChild tooltip="Close Session" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                    <Link to="/logout">
+                        <LogOutIcon />
+                        <span>Close Session</span>
+                    </Link>
+                </SidebarMenuButton></SidebarMenuItem></SidebarMenu>
+
             </SidebarFooter>
 
         </Sidebar>
