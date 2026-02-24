@@ -118,4 +118,9 @@ export const backendAPI = {
         return await api.exit_application();
     },
 
+    closeSession: async (): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.close_session();
+    },
+
 }

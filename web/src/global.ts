@@ -26,6 +26,7 @@ declare global {
                 set_close_behavior: (behavior: string) => Promise<boolean>;
                 minimize_window: () => Promise<void>;
                 exit_application: () => Promise<void>;
+                close_session: () => Promise<boolean>;
             }
         }
     }

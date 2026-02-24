@@ -10,7 +10,8 @@ from app.controllers.kdbx.operations import (
     delete_group as delete_group_controller
 )
 from app.controllers.kdbx.manager import (
-    generate_keyfile, create_new_vault, open_vault as open_vault_controller
+    generate_keyfile, create_new_vault, open_vault as open_vault_controller,
+    close_current_vault
 )
 from app.utils.logger import logger
 from app.controllers.history import (
@@ -204,3 +205,13 @@ class API:
 
     def set_force_exit_callback(self, callback):
         self._on_force_exit = callback
+
+
+    def close_session(self) -> bool:
+        try:
+            close_current_vault()
+            logger.info("Session closed successfully via GUI request.")
+            return True
+        except Exception as e:
+            logger.error(f"Error closing session via API: {e}")
+            return False
