@@ -90,26 +90,35 @@ def parse_csv_to_models(
 
     try:
         df = pd.read_csv(path).fillna("")
-        data_dicts = df.replace({pd.NA: "", float('nan'): ""}).to_dict(orient="records")
+        df.replace({pd.NA: "", float('nan'): ""}).to_dict(orient="records")
         entries = []
+
+        def get_value(field_name):
+            """
+            """
+            cols = mapping.get(field_name)              
+            
+            if isinstance(cols, list):
+                for col in cols:
+                    val = str(row.get(col, "")).strip()
+                    if val: return val
+                return ""
+            
+            return str(row.get(cols, "")).strip()
 
         for _, row in df.iterrows():
             try:
-                title = str(row.get(mapping.get("title"), "Imported Entry"))
-                password = str(row.get(mapping.get("password"), ""))
-
-                if not title or not password:
-                    continue
-
                 entry = EntryModel(
-                    title=title,
-                    username=str(row.get(mapping.get("username"), "")),
-                    password=password,
-                    url=str(row.get(mapping.get("url"), "")),
-                    notes=str(row.get(mapping.get("notes"), "")),
+                    title=get_value("title") or "Imported Entry",
+                    username=get_value("username"),
+                    password=get_value("password"),
+                    url=get_value("url"),
+                    notes=get_value("notes"),
                     group="Imported"
                 )
-                entries.append(entry)
+                
+                if entry.title and entry.password:
+                    entries.append(entry)
             except Exception as row_err:
                 logger.warning(f"Skipping row due to processing error: {row_err}")
                 continue
