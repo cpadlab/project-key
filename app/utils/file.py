@@ -3,6 +3,9 @@ import urllib.request
 import urllib.parse
 import logging
 from typing import Optional
+import os
+import platform
+import subprocess
 
 from app.core.config import settings
 
@@ -116,3 +119,33 @@ def validate_entry_url(url_or_path: str) -> bool:
     
     logger.error(f"Local file does not exist or is not an HTML file: {local_path}")
     return False
+
+
+def open_folder_in_explorer(path_str: str) -> bool:
+    """
+    Open a folder or the container folder of a file in the operating system's file explorer (Windows, macOS, Linux).
+    In the file explorer, select the folder or file you want to copy.
+
+    :param path_str: The path to the folder or file.
+    :return: True if it could be opened, False otherwise.
+    """
+    path = Path(path_str).resolve()
+    
+    if path.is_file():
+        path = path.parent
+
+    if not path.exists():
+        logger.error(f"The location cannot be opened; it does not exist.: {path}")
+        return False
+
+    try:
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", str(path)])
+        else:
+            subprocess.Popen(["xdg-open", str(path)])
+        return True
+    except Exception as e:
+        logger.error(f"Error when trying to open the folder {path}: {e}")
+        return False
