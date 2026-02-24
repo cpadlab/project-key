@@ -11,7 +11,7 @@ const AppearanceSettings = () => {
             
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                    <SidebarTrigger className="-ml-2" />
+                    <SidebarTrigger />
                     <BreadcrumbRoute page="Appearance" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">Appearance and Behavior</h2>

@@ -2,7 +2,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 const DashboardPage = () => {
     return (
-        <div>
+        <div className="p-4">
             <SidebarTrigger />
         </div>
     )

@@ -13,6 +13,7 @@ import SettingsLayout from "./pages/settings/layout"
 import AppearanceSettings from "./pages/settings/sections/appearance/page"
 import SettingsPage from "./pages/settings/page"
 import SecuritySettings from "./pages/settings/sections/security/page"
+import MaintenanceSettings from "./pages/settings/sections/maintenance/page"
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                         <Route index element={<SettingsPage />} />
                         <Route path="appearance" element={<AppearanceSettings />} />
                         <Route path="security" element={<SecuritySettings />} />
+                        <Route path="maintenance" element={<MaintenanceSettings />} />
                     </Route>
                 </Routes>
             </Router>

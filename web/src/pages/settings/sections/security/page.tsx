@@ -45,7 +45,7 @@ const SecuritySettings = () => {
             
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                    <SidebarTrigger className="-ml-2" />
+                    <SidebarTrigger />
                     <BreadcrumbRoute page="Security" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight">Security and Auditing</h2>
@@ -57,11 +57,11 @@ const SecuritySettings = () => {
             <div className="space-y-4">
                 
                 {isLoading ? (
-                    <div className="space-y-8">
+                    <>
                         <Skeleton className="h-12 w-full max-w-2xl" />
                         <Skeleton className="h-12 w-full max-w-2xl" />
                         <Skeleton className="h-12 w-full max-w-2xl" />
-                    </div>
+                    </>
                 ) : (
                     <>
                         <HIBP checked={settings.pwned_audit_enabled} onChange={(val) => setSettings(prev => ({ ...prev, pwned_audit_enabled: val }))} />
