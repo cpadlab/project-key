@@ -16,6 +16,30 @@ _BASE_DIR = _CURRENT_DIR.parent.parent
 VERSION_FILE = _BASE_DIR / "VERSION"
 DEFAULT_INI_FILE = _BASE_DIR / "data" / "config.default.ini"
 
+SECTION_MAP = {
+    "LOG_DIR": ("DIRS", "log_dir"),
+    "TEMP_DIR": ("DIRS", "temp_dir"),
+    "BACKUP_DIR": ("DIRS", "backup_dir"),
+    "LOG_FILENAME": ("FILENAMES", "log_filename"),
+    "HISTORY_FILENAME": ("FILENAMES", "history_filename"),
+    "DUPLICATE_TAG": ("TAGS", "duplicate"),
+    "PWNED_TAG": ("TAGS", "pwned"),
+    "WEAK_TAG": ("TAGS", "weak"),
+    "EMERGENCY_FILE_NAME": ("EMERGENCY", "emergency_file_name"),
+    "EMERGENCY_DAYS_THRESHOLD": ("EMERGENCY", "emergency_days_threshold"),
+    "EMERGENCY_CHECK_INTERVAL": ("EMERGENCY", "emergency_check_interval"),
+    "RECOVERY_KIT_NAME": ("EMERGENCY", "recovery_kit_name"),
+    "EMERGENCY_PASSPHRASE": ("EMERGENCY", "emergency_passphrase"),
+    "MIN_WINDOW_HEIGHT": ("GUI", "min_window_height"),
+    "MIN_WINDOW_WIDTH": ("GUI", "min_window_width"),
+    "DEV_TOOLS": ("GUI", "dev_tools"),
+    "ENTRY_URL": ("GUI", "entry_url"),
+    "DEFAULT_WINDOW_WIDTH": ("GUI", "default_width"),
+    "DEFAULT_WINDOW_HEIGHT": ("GUI", "default_height"),
+}
+
+EXCLUDE_FROM_INI = {"ACTIVE_CONFIG_PATH", "PROJECT_NAME", "PROJECT_KEY", "VERSION", "FILE_PATH", "ICON"}
+
 
 def _get_version() -> str:
     """
@@ -66,13 +90,21 @@ class IniConfigSettingsSource(PydanticBaseSettingsSource):
         config = configparser.ConfigParser()
         config.read(DEFAULT_INI_FILE, encoding="utf-8")
         
-        target_fields = self.settings_cls.model_fields.items()
-        for section in config.sections() + ['DEFAULT']:
-            for field_name, field_info in target_fields:
-                search_key = (field_info.alias or field_name).lower()
-                val = config[section].get(search_key, None)
-                if val is not None:
-                    settings_dict[field_name] = val
+        for field_name, field_info in self.settings_cls.model_fields.items():
+            if field_name in EXCLUDE_FROM_INI:
+                continue
+            
+            section, key = SECTION_MAP.get(field_name, ("DEFAULT", field_name.lower()))
+            
+            val = None
+            if config.has_section(section):
+                val = config.get(section, key, fallback=None)
+            
+            if val is None:
+                val = config.get("DEFAULT", key, fallback=None)
+
+            if val is not None:
+                settings_dict[field_name] = val
                     
         return settings_dict
 
@@ -182,30 +214,69 @@ class Settings(BaseSettings):
 
     def save_settings(self) -> bool:
         """
-        Persist the current application settings to the active INI configuration file.
+        Persists the current application settings to the active INI configuration file.
 
-        :return: True if the settings were successfully saved to disk, False otherwise.
-        :rtype: bool
+        The process follows these steps:
+        1. Identifies the target file path (active config or default).
+        2. Loads the existing INI file to preserve external sections or comments.
+        3. Iterates through the model fields, excluding internal constants.
+        4. Maps each field to its corresponding INI section and key.
+        5. Formats Python types (like booleans) to INI-compatible strings.
+        6. Writes the updated configuration back to disk.
+
+        Returns:
+            bool: True if the settings were successfully saved, False if an 
+                  IOError or configuration error occurred.
+
+        Raises:
+            Exception: Logs any unexpected errors during the file writing process 
+                       via the internal logger.
         """
         path_to_save = self.ACTIVE_CONFIG_PATH or str(DEFAULT_INI_FILE)
         
         try:
+            # Importante: Usamos una instancia limpia para evitar herencias raras
             config = configparser.ConfigParser()
+            
             if Path(path_to_save).exists():
                 config.read(path_to_save, encoding="utf-8")
 
             for field_name, field_info in self.model_fields.items():
-                if field_name == "ACTIVE_CONFIG_PATH":
+                if field_name in EXCLUDE_FROM_INI:
                     continue
+                
                 val = getattr(self, field_name)
-                config['DEFAULT'][field_name.lower()] = str(val) if val is not None else ""
+                
+                # Formateo de tipos
+                if isinstance(val, bool):
+                    str_val = str(val).lower()
+                elif val is None:
+                    str_val = ""
+                else:
+                    str_val = str(val)
+
+                # Obtener sección y clave del mapa (Ahora sí coincidirán las mayúsculas)
+                section, key = SECTION_MAP.get(field_name, ("DEFAULT", field_name.lower()))
+
+                # --- LÓGICA ANTI-DUPLICADOS ---
+                # Si vamos a poner la clave en una sección que NO es DEFAULT, 
+                # nos aseguramos de borrarla de DEFAULT para que no se repita arriba.
+                if section != "DEFAULT":
+                    if not config.has_section(section):
+                        config.add_section(section)
+                    if config.has_option('DEFAULT', key):
+                        config.remove_option('DEFAULT', key)
+                
+                config.set(section, key, str_val)
 
             with open(path_to_save, 'w', encoding="utf-8") as configfile:
                 config.write(configfile)
+                
+            logger.info(f"Settings successfully saved in {path_to_save}")
             return True
 
         except Exception as e:
-            logger.error(f"Error persisting configuration to {path_to_save}: {e}")
+            logger.error(f"Error persisting configuration in {path_to_save}: {e}")
             return False
 
 
