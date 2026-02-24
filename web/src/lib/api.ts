@@ -133,4 +133,24 @@ export const backendAPI = {
         return await api.get_close_behavior();
     },
 
+    getSecuritySettings: async () => {
+        const api = await getPywebviewApi();
+        return await api.get_security_settings();
+    },
+
+    setPwnedAuditEnabled: async (enabled: boolean): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_pwned_audit_enabled(enabled);
+    },
+
+    setPasswordAuditInterval: async (interval: number): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_password_audit_interval(interval);
+    },
+
+    setClipboardClearInterval: async (interval: number): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_clipboard_clear_interval(interval);
+    },
+
 }

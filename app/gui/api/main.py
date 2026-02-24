@@ -219,3 +219,43 @@ class API:
 
     def is_session_active(self) -> bool:
         return get_active_vault() is not None
+
+
+    def get_security_settings(self) -> dict:
+        return {
+            "pwned_audit_enabled": settings.PWNED_AUDIT_ENABLED,
+            "password_audit_interval": settings.PASSWORD_AUDIT_INTERVAL,
+            "clipboard_clear_interval": settings.CLIPBOARD_CLEAR_INTERVAL
+        }
+
+
+    def set_pwned_audit_enabled(self, enabled: bool) -> bool:
+        try:
+            settings.PWNED_AUDIT_ENABLED = bool(enabled)
+            logger.info(f"Pwned audit enabled updated to: {settings.PWNED_AUDIT_ENABLED}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving pwned_audit_enabled: {e}")
+            return False
+
+
+    def set_password_audit_interval(self, interval: int) -> bool:
+        try:
+            parsed_interval = max(10, int(interval))
+            settings.PASSWORD_AUDIT_INTERVAL = parsed_interval
+            logger.info(f"Password audit interval updated to: {parsed_interval}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving password_audit_interval: {e}")
+            return False
+
+
+    def set_clipboard_clear_interval(self, interval: int) -> bool:
+        try:
+            parsed_interval = max(5, int(interval))
+            settings.CLIPBOARD_CLEAR_INTERVAL = parsed_interval
+            logger.info(f"Clipboard clear interval updated to: {parsed_interval}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving clipboard_clear_interval: {e}")
+            return False

@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator"
 
 import { settingsNav } from "./components/leftbar"
 import { Link } from "react-router-dom"
+import { VersionBadge } from "@/components/blocks/version-badge"
 
 const SettingsPage = () => {
     return (
@@ -27,6 +28,8 @@ const SettingsPage = () => {
                     </Link>
                 ))}
             </div>
+
+            <VersionBadge />
 
         </div>
     )

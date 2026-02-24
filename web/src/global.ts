@@ -42,6 +42,14 @@ declare global {
                 close_session: () => Promise<boolean>;
                 is_session_active: () => Promise<boolean>;
                 get_close_behavior: () => Promise<string>;
+                get_security_settings: () => Promise<{
+                    pwned_audit_enabled: boolean;
+                    password_audit_interval: number;
+                    clipboard_clear_interval: number;
+                }>;
+                set_pwned_audit_enabled: (enabled: boolean) => Promise<boolean>;
+                set_password_audit_interval: (interval: number) => Promise<boolean>;
+                set_clipboard_clear_interval: (interval: number) => Promise<boolean>;
             }
         }
     }
