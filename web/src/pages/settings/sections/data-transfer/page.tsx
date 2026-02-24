@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator"
 
 import { BreadcrumbRoute } from "../../components/breadcrumb-route"
 import { ExportCard } from "./components/export"
+import { ImportCard } from "./components/import/card"
 
 const DataTransferSettings = () => {
 
@@ -21,8 +22,13 @@ const DataTransferSettings = () => {
             <Separator />
 
             <div className="space-y-4">
+                <ImportCard />
+                <div className="flex items-center gap-4">
+                    <Separator className="flex-1" />
+                    <span className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Danger Zone</span>
+                    <Separator className="flex-1" />
+                </div>
                 <ExportCard />
-                <Separator />
             </div>
         </div>
     )

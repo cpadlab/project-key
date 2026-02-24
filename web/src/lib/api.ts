@@ -215,4 +215,24 @@ export const backendAPI = {
         return await api.export_data(format, groupName);
     },
 
+    getCsvColumns: async (filePath: string): Promise<string[]> => {
+        const api = await getPywebviewApi();
+        return await api.get_csv_columns(filePath);
+    },
+
+    selectImportFile: async (): Promise<string | null> => {
+        const api = await getPywebviewApi();
+        return await api.select_file(['CSV files (*.csv)', 'All files (*.*)']);
+    },
+
+    previewCsvImport: async (filePath: string, preset?: string, mapping?: any): Promise<any[]> => {
+        const api = await getPywebviewApi();
+        return await api.preview_csv_import(filePath, preset, mapping);
+    },
+
+    runImport: async (entries: any[], targetGroup: string): Promise<{ success: number; failed: number }> => {
+        const api = await getPywebviewApi();
+        return await api.run_import(entries, targetGroup);
+    },
+
 }

@@ -6,9 +6,10 @@ import logging
 from app.controllers.export import export_vault_data
 from app.utils.file import open_folder_in_explorer
 from app.core.config import settings, DEFAULT_INI_FILE
+from app.utils.logger import logger
 from app.controllers.kdbx.models import GroupModel, EntryModel
 from app.controllers.imports import (
-    execute_final_import, parse_csv_to_models
+    execute_final_import, parse_csv_to_models, get_csv_columns
 )
 from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
@@ -401,14 +402,28 @@ class API:
         return self.select_file(file_types=('CSV files (*.csv)', 'All files (*.*)'))
 
 
-    def preview_csv_import(self, file_path: str, preset: str) -> List[Dict]:
+    def preview_csv_import(self, file_path: str, preset: Optional[str] = None, mapping: Optional[Dict] = None) -> List[Dict]:
         try:
-            entries = parse_csv_to_models(file_path, preset_name=preset)
+            entries = parse_csv_to_models(
+                file_path=file_path, 
+                preset_name=preset, 
+                manual_mapping=mapping
+            )
             return [e.model_dump(mode='json') for e in entries]
         except Exception as e:
-            logger.error(f"Error en preview de importación: {e}")
+            logger.error(f"Error in preview_csv_import: {e}")
             return []
+
 
     def run_import(self, entries_data: List[Dict], target_group: str) -> Dict[str, int]:
         entries = [EntryModel(**data) for data in entries_data]
         return execute_final_import(entries, target_group)
+
+
+    def get_csv_columns(self, file_path: str) -> List[str]:
+        try:
+            logger.info(f"Fetching CSV columns for: {file_path}")
+            return get_csv_columns(file_path)
+        except Exception as e:
+            logger.error(f"Error fetching CSV columns via API: {e}")
+            return []

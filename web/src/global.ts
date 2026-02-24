@@ -73,6 +73,9 @@ declare global {
                 open_config_dir: () => Promise<boolean>;
                 add_entry: (entry: any) => Promise<boolean>;
                 export_data: (format: string, groupName?: string) => Promise<boolean>;
+                get_csv_columns: (filePath: string) => Promise<string[]>;
+                preview_csv_import: (filePath: string, preset?: string, mapping?: any) => Promise<any[]>;
+                run_import: (entries: any[], targetGroup: string) => Promise<{ success: number; failed: number }>;
             }
         }
     }

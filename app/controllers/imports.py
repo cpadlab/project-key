@@ -90,6 +90,7 @@ def parse_csv_to_models(
 
     try:
         df = pd.read_csv(path).fillna("")
+        data_dicts = df.replace({pd.NA: "", float('nan'): ""}).to_dict(orient="records")
         entries = []
 
         for _, row in df.iterrows():

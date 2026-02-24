@@ -41,12 +41,9 @@ export const ListView = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-2 overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                     {generalEntries.length > 0 ? (
-                        <>
-                        {generalEntries.map((item) => (
+                        generalEntries.map((item) => (
                             <ListCard key={item.uuid} data={item} />
-                        ))}
-                        {generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}{generalEntries.map((item) => (<ListCard key={item.uuid} data={item} />))}
-                        </>
+                        ))
                     ) : (
                         <div className="py-8 text-center border border-dashed rounded-xl text-xs text-muted-foreground">
                             No entries in this group.

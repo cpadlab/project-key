@@ -21,10 +21,11 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     const [sortOrder, setSortOrder] = useState("az");
 
     const fetchEntries = async (groupName: string) => {
+        if (isLoading) return;
         setIsLoading(true);
         try {
             const data = await backend.listEntriesByGroup(groupName);
-            setRawEntries(data);
+            setRawEntries(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Error fetching entries:", error);
             toast.error("Failed to load group entries");
@@ -36,23 +37,27 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     const sortedEntries = useMemo(() => {
         const items = [...rawEntries];
         switch (sortOrder) {
-            case "az": return items.sort((a, b) => a.title.localeCompare(b.title));
-            case "za": return items.sort((a, b) => b.title.localeCompare(a.title));
-            case "newest": return items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-            case "oldest": return items.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-            default: return items;
+            case "az": 
+                return items.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+            case "za": 
+                return items.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+            case "newest": 
+                return items.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+            case "oldest": 
+                return items.sort((a, b) => new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime());
+            default: 
+                return items;
         }
     }, [rawEntries, sortOrder]);
 
     useEffect(() => {
         fetchEntries(activeGroup);
-    }, [activeGroup]);
-
-    useEffect(() => {
         const handleVaultChange = () => fetchEntries(activeGroup);
         window.addEventListener('vault-changed', handleVaultChange);
-        return () => window.removeEventListener('vault-changed', handleVaultChange);
-    }, [activeGroup]);
+        return () => {
+            window.removeEventListener('vault-changed', handleVaultChange);
+        };
+    }, [activeGroup]); 
 
     return (
         <GroupContext.Provider value={{ 

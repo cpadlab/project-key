@@ -1,4 +1,4 @@
-import { LinkIcon, LockIcon, SquareArrowOutUpRightIcon, StarIcon, UserIcon } from "lucide-react"
+import { LinkIcon, LockIcon, SquareArrowOutUpRightIcon, UserIcon } from "lucide-react"
 import { DEFAULT_ICONS } from "@/components/blocks/icon-selector"
 import { Button } from "@/components/ui/button"
 
@@ -31,10 +31,8 @@ export const ListCard = ({ data }: ListCardProps) => {
                 </div>
 
                 <div className="flex-1 min-w-0 flex flex-col">
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-foreground truncate capitalize">
-                            {data.title.toLocaleLowerCase()}
-                        </span>
+                    <div className="flex items-center gap-2 truncate w-full">
+                        <p className="font-semibold text-sm text-foreground truncate capitalize">{data.title.toLocaleLowerCase()}</p>
                     </div>                
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                         <span className="text-xs truncate">{data.username ? data.username.toLocaleLowerCase() : "-"}</span>
