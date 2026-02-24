@@ -153,4 +153,24 @@ export const backendAPI = {
         return await api.set_clipboard_clear_interval(interval);
     },
 
+    getMaintenanceSettings: async () => {
+        const api = await getPywebviewApi();
+        return await api.get_maintenance_settings();
+    },
+
+    setRecycleBinRetentionDays: async (days: number): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_recycle_bin_retention_days(days);
+    },
+
+    setBackupMaxCount: async (count: number): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_backup_max_count(count);
+    },
+
+    setOtherServicesInterval: async (interval: number): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.set_other_services_interval(interval);
+    },
+
 }

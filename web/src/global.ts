@@ -50,6 +50,14 @@ declare global {
                 set_pwned_audit_enabled: (enabled: boolean) => Promise<boolean>;
                 set_password_audit_interval: (interval: number) => Promise<boolean>;
                 set_clipboard_clear_interval: (interval: number) => Promise<boolean>;
+                get_maintenance_settings: () => Promise<{
+                    recycle_bin_retention_days: number;
+                    backup_max_count: number;
+                    other_services_interval: number;
+                }>;
+                set_recycle_bin_retention_days: (days: number) => Promise<boolean>;
+                set_backup_max_count: (count: number) => Promise<boolean>;
+                set_other_services_interval: (interval: number) => Promise<boolean>;
             }
         }
     }

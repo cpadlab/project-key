@@ -259,3 +259,44 @@ class API:
         except Exception as e:
             logger.error(f"Error saving clipboard_clear_interval: {e}")
             return False
+
+
+    def get_maintenance_settings(self) -> dict:
+        return {
+            "recycle_bin_retention_days": settings.RECYCLE_BIN_RETENTION_DAYS,
+            "backup_max_count": settings.BACKUP_MAX_COUNT,
+            "other_services_interval": settings.OTHER_SERVICES_INTERVAL
+        }
+
+
+    def set_recycle_bin_retention_days(self, days: int) -> bool:
+        try:
+            parsed_days = max(1, int(days))
+            settings.RECYCLE_BIN_RETENTION_DAYS = parsed_days
+            logger.info(f"Recycle bin retention days updated to: {parsed_days}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving recycle_bin_retention_days: {e}")
+            return False
+
+
+    def set_backup_max_count(self, count: int) -> bool:
+        try:
+            parsed_count = max(1, min(20, int(count)))
+            settings.BACKUP_MAX_COUNT = parsed_count
+            logger.info(f"Backup max count updated to: {parsed_count}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving backup_max_count: {e}")
+            return False
+
+
+    def set_other_services_interval(self, interval: int) -> bool:
+        try:
+            parsed_interval = max(30, int(interval))
+            settings.OTHER_SERVICES_INTERVAL = parsed_interval
+            logger.info(f"Other services interval updated to: {parsed_interval}")
+            return settings.save_settings()
+        except Exception as e:
+            logger.error(f"Error saving other_services_interval: {e}")
+            return False
