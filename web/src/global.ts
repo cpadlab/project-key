@@ -1,9 +1,22 @@
+import type { LucideIcon } from "lucide-react";
+
 export interface GroupModel {
     name: string;
     icon: number | null;
     color: string | null;
     created_at?: string;
     updated_at?: string;
+}
+
+export interface FooterItem {
+    icon: LucideIcon;
+    label: string;
+    href: string;
+    className?: string;
+}
+
+export interface FooterGroup {
+    items: FooterItem[];
 }
 
 declare global {
@@ -28,6 +41,7 @@ declare global {
                 exit_application: () => Promise<void>;
                 close_session: () => Promise<boolean>;
                 is_session_active: () => Promise<boolean>;
+                get_close_behavior: () => Promise<string>;
             }
         }
     }

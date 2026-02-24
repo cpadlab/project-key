@@ -1,25 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, type LucideIcon } from "lucide-react"
+import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon } from "lucide-react"
 
 import { CreateGroupDialog } from "./forms/create-new-group"
 import { backendAPI as backend } from '@/lib/api';
-import type { GroupModel } from "@/global"
+import type { FooterGroup, GroupModel } from "@/global"
 import GroupCard from "./cards/group-card/card"
 import { Link } from "react-router-dom"
 import { Separator } from "@/components/ui/separator"
-
-interface FooterItem {
-    icon: LucideIcon;
-    label: string;
-    href: string;
-    className?: string;
-}
-
-interface FooterGroup {
-    items: FooterItem[];
-}
 
 const Leftbar = () => {
 
@@ -54,7 +43,7 @@ const Leftbar = () => {
                 {
                     icon: Settings2Icon,
                     label: "Settings",
-                    href: "/settings",
+                    href: "/settings/appearance",
                 },
             ]
         },
