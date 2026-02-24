@@ -10,7 +10,8 @@ import DashboardPage from "./pages/dashboard/page"
 import { CloseConfirmationDialog } from "./components/blocks/dialogs/close-confirmation-dialog"
 import LogoutPage from "./pages/logout"
 import SettingsLayout from "./pages/settings/layout"
-import AppearanceSettings from "./pages/settings/sections/appearance/appearance"
+import AppearanceSettings from "./pages/settings/sections/appearance/page"
+import SettingsPage from "./pages/settings/page"
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/dashboard" element={<DashboardPage />} />
                     </Route>
                     <Route path="/settings" element={<SettingsLayout />}>
+                        <Route index element={<SettingsPage />} />
                         <Route path="appearance" element={<AppearanceSettings />} />
                     </Route>
                 </Routes>

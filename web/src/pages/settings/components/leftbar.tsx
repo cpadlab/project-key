@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGrou
 import { Separator } from "@/components/ui/separator"
 import type { FooterGroup } from "@/global"
 
-const settingsNav = [
+export const settingsNav = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
     { title: "Security", href: "/settings/security", icon: ShieldCheckIcon },
     { title: "Maintenance", href: "/settings/maintenance", icon: HardDriveIcon },

@@ -15,7 +15,9 @@ export const BreadcrumbRoute = ({ page }: { page: string }) => {
                 <BreadcrumbSeparator />
                 
                 <BreadcrumbItem>
-                    <BreadcrumbPage>Settings</BreadcrumbPage>
+                    <BreadcrumbLink asChild>
+                        <Link to="/settings">Settings</Link>
+                    </BreadcrumbLink>
                 </BreadcrumbItem>
                 
                 <BreadcrumbSeparator />
