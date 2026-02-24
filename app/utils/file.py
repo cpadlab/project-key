@@ -95,8 +95,17 @@ def validate_entry_url(url_or_path: str) -> bool:
     :rtype: bool
     """
     parsed = urllib.parse.urlparse(url_or_path)
+
+    if not parsed.scheme in ('http', 'https'):
+        try:
+            local_path = Path(url_or_path).resolve()
+            if local_path.exists() and local_path.suffix.lower() == '.html':
+                return True
+        except Exception as e:
+            logger.error(f"Error validating local path '{url_or_path}': {e}")
+            return False
     
-    if parsed.scheme in ('http', 'https'):
+    else:
         try:
             req = urllib.request.Request(url_or_path, method='HEAD')
             with urllib.request.urlopen(req, timeout=5) as response:
@@ -104,14 +113,6 @@ def validate_entry_url(url_or_path: str) -> bool:
         except Exception as e:
             logger.error(f"Error validating remote URL '{url_or_path}': {e}")
             return False
-
-    try:
-        local_path = Path(url_or_path).resolve()
-        if local_path.exists() and local_path.suffix.lower() == '.html':
-            return True
-    except Exception as e:
-        logger.error(f"Error validating local path '{url_or_path}': {e}")
-        return False
     
     logger.error(f"Local file does not exist or is not an HTML file: {local_path}")
     return False
