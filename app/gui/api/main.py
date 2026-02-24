@@ -171,3 +171,26 @@ class API:
         except Exception as e:
             logger.error(f"Error in API delete_group: {e}")
             return False
+
+
+    def get_close_behavior(self) -> str:
+        return settings.CLOSE_BEHAVIOR
+
+
+    def set_close_behavior(self, behavior: str) -> bool:
+        if behavior in ['ask', 'minimize', 'exit']:
+            settings.CLOSE_BEHAVIOR = behavior
+            logger.info(f"Preferencia de cierre actualizada a: {behavior}")
+            # Aquí podrías añadir lógica para persistir el .ini si lo deseas
+            return True
+        return False
+
+
+    def minimize_window(self):
+        if self._window:
+            self._window.hide()
+
+
+    def exit_application(self):
+        if self._window:
+            self._window.evaluate_js("window.dispatchEvent(new CustomEvent('app-executing-exit'))")

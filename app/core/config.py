@@ -118,6 +118,7 @@ class Settings(BaseSettings):
     DEV_TOOLS: bool = Field(default=False)
     ENTRY_URL: str = Field(default="build/index.html")
     ICON: str = 'icon.ico'
+    CLOSE_BEHAVIOR: str = Field(default="ask")
 
     model_config = SettingsConfigDict(
         extra="ignore",

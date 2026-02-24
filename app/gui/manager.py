@@ -122,13 +122,29 @@ class GUIManager:
         :rtype: bool
         """
         if self._is_shutting_down:
-            logger.info("Proceeding to close application...")
             return True 
-            
-        logger.info("Minimizing to tray instead of closing...")
-        self.window.hide()
+
+        behavior = settings.CLOSE_BEHAVIOR
+
+        if behavior == 'minimize':
+            logger.info("Minimizing to the tray by configuration.")
+            self.window.hide()
+            return False
+        
+        if behavior == 'exit':
+            logger.info("Exiting the application by configuration.")
+            self._is_shutting_down = True
+            return True
+
+        logger.info("Asking the user to close...")
+        self.window.evaluate_js("window.dispatchEvent(new CustomEvent('show-close-dialog'))")
         return False
 
+
+    def force_exit(self):
+        self._is_shutting_down = True
+        self.window.destroy()
+        
 
     def run(self) -> None:
         """
