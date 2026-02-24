@@ -64,6 +64,7 @@ declare global {
                 open_backup_dir: () => Promise<boolean>;
                 open_history_dir: () => Promise<boolean>;
                 open_config_dir: () => Promise<boolean>;
+                add_entry: (entry: any) => Promise<boolean>;
             }
         }
     }

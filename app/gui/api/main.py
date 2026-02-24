@@ -5,11 +5,12 @@ import logging
 
 from app.utils.file import open_folder_in_explorer
 from app.core.config import settings, DEFAULT_INI_FILE
-from app.controllers.kdbx.models import GroupModel
+from app.controllers.kdbx.models import GroupModel, EntryModel
 from app.controllers.kdbx.operations import (
     create_group as create_group_controller,
     list_groups as list_groups_controller,
-    delete_group as delete_group_controller
+    delete_group as delete_group_controller,
+    add_entry as add_entry_controller
 )
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller,
@@ -341,3 +342,13 @@ class API:
     def open_config_dir(self) -> bool:
         path = settings.ACTIVE_CONFIG_PATH or str(DEFAULT_INI_FILE)
         return open_folder_in_explorer(path)
+
+
+    def add_entry(self, entry_data: dict) -> bool:        
+        try:
+            entry_model = EntryModel(**entry_data)
+            logger.info(f"Adding new entry: {entry_model.title}")
+            return add_entry_controller(entry_model)
+        except Exception as e:
+            logger.error(f"Backend error adding entry: {e}")
+            return False

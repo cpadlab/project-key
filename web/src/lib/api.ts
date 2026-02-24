@@ -200,4 +200,9 @@ export const backendAPI = {
         return await api.open_config_dir();
     },
 
+    addEntry: async (entry: any): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.add_entry(entry);
+    },
+
 }
