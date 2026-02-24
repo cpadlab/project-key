@@ -14,6 +14,7 @@ import AppearanceSettings from "./pages/settings/sections/appearance/page"
 import SettingsPage from "./pages/settings/page"
 import SecuritySettings from "./pages/settings/sections/security/page"
 import MaintenanceSettings from "./pages/settings/sections/maintenance/page"
+import AdvancedSettings from "./pages/settings/sections/advanced/page"
 
 function App() {
     return (
@@ -33,6 +34,7 @@ function App() {
                         <Route path="appearance" element={<AppearanceSettings />} />
                         <Route path="security" element={<SecuritySettings />} />
                         <Route path="maintenance" element={<MaintenanceSettings />} />
+                        <Route path="advanced" element={<AdvancedSettings />} />
                     </Route>
                 </Routes>
             </Router>
