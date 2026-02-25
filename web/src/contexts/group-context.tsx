@@ -11,6 +11,9 @@ interface GroupContextType {
     entries: any[];
     isLoading: boolean;
     sortOrder: string;
+    selectedEntries: string[];
+    toggleEntrySelection: (uuid: string) => void;
+    clearSelection: () => void;
     setSortOrder: (order: string) => void;
 }
 
@@ -23,8 +26,23 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     const [rawEntries, setRawEntries] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [sortOrder, setSortOrder] = useState("az");
+    const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
 
     const isFetchingRef = useRef(false);
+
+    const toggleEntrySelection = useCallback((uuid: string) => {
+        setSelectedEntries(prev => 
+            prev.includes(uuid) ? prev.filter(id => id !== uuid) : [...prev, uuid]
+        );
+    }, []);
+
+    const clearSelection = useCallback(() => {
+        setSelectedEntries([]);
+    }, []);
+
+    useEffect(() => {
+        clearSelection();
+    }, [activeGroup, clearSelection]);
 
     const refreshGroups = useCallback(async () => {
         try {
@@ -99,7 +117,10 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
             entries: sortedEntries,
             isLoading,
             sortOrder,
-            setSortOrder
+            setSortOrder,
+            selectedEntries,
+            toggleEntrySelection,
+            clearSelection
         }}>
             {children}
         </GroupContext.Provider>

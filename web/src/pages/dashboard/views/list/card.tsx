@@ -1,11 +1,13 @@
 import { useState } from "react"
-import { LinkIcon, LockIcon, SquareArrowOutUpRightIcon, UserIcon } from "lucide-react"
+import { CheckIcon, LinkIcon, LockIcon, SquareArrowOutUpRightIcon, UserIcon } from "lucide-react"
 import { DEFAULT_ICONS } from "@/components/blocks/icon-selector"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from "@/components/ui/context-menu"
 
 import { EntryDropdown } from "../../components/entry/menu/dropdown"
 import { EntryMenuItems } from "../../components/entry/menu/menu-item"
+import { useGroup } from "@/contexts/group-context"
+import { cn } from "@/lib/utils"
 
 interface ListCardProps {
     data: {
@@ -27,27 +29,35 @@ interface ListCardProps {
 
 export const ListCard = ({ data }: ListCardProps) => {
 
+    const { selectedEntries, toggleEntrySelection } = useGroup()
+    
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
+    const isSelected = selectedEntries.includes(data.uuid);
+
     const iconEntry = DEFAULT_ICONS.find((item) => item.id === data.icon) || DEFAULT_ICONS.find((item) => item.id === 0)!;
     const IconComponent = iconEntry.icon;
-    const bgColor = data.color || 'var(--primary)';
+    const bgColor = isSelected ? 'hsl(var(--primary))' : (data.color || 'var(--primary)');
 
     const handleOpen = () => {
         console.log("Abrir detalle", data.uuid);
     }
 
+    const handleToggleSelect = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        toggleEntrySelection(data.uuid);
+    }
+
     return (
         <ContextMenu>
             <ContextMenuTrigger asChild>
-                <div className="group/entry-card bg-card hover:bg-accent/40 py-1.5 px-2 rounded-xl border flex items-center gap-2.5 transition-all w-full">
+                <div className={cn("group/entry-card py-1.5 px-2 rounded-xl border flex items-center gap-2.5 transition-all w-full", isSelected ? "bg-accent/40 border-primary/50" : "bg-card hover:bg-accent/40")}>
                     
                     <button onClick={handleOpen} className="flex items-center flex-1 gap-2.5 cursor-pointer text-left outline-none">
-                        <div className="flex p-1.5 shrink-0 items-center justify-center rounded-lg shadow-inner text-white" style={{ backgroundColor: bgColor }}>
-                            <IconComponent className="size-4" />
+                        <div onClick={handleToggleSelect} className={cn("flex border-2 p-1.5 shrink-0 items-center justify-center rounded-lg shadow-inner text-white transition-all cursor-pointer", isSelected ? "border-primary scale-95" : "hover:scale-105")} style={{ backgroundColor: bgColor }}>
+                            {isSelected ? <CheckIcon className="size-4" /> : <IconComponent className="size-4" />}
                         </div>
-
                         <div className="flex-1 min-w-0 flex gap-2">
                             <div className="flex items-center gap-2 truncate">
                                 <p className="font-semibold text-sm text-foreground truncate capitalize">{data.title.toLowerCase()}</p>
@@ -86,7 +96,7 @@ export const ListCard = ({ data }: ListCardProps) => {
             </ContextMenuTrigger>
 
             <ContextMenuContent className="w-56">
-                <EntryMenuItems data={data} isContext onOpen={handleOpen} onEdit={() => setIsUpdateDialogOpen(true)} onDelete={() => setIsDeleteDialogOpen(true)}/>
+                <EntryMenuItems isSelected={isSelected} onToggleSelect={() => toggleEntrySelection(data.uuid)} data={data} isContext onOpen={handleOpen} onEdit={() => setIsUpdateDialogOpen(true)} onDelete={() => setIsDeleteDialogOpen(true)}/>
             </ContextMenuContent>
             
         </ContextMenu>

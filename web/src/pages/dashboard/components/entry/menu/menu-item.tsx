@@ -1,4 +1,4 @@
-import {  Calendar, Clock, EyeIcon, ExternalLinkIcon, StarOffIcon, StarIcon, PencilIcon, FolderOutputIcon, LockIcon, UserIcon, Trash2Icon, KeyRoundIcon, LinkIcon, Square, SquareIcon } from "lucide-react"
+import {  Calendar, Clock, EyeIcon, ExternalLinkIcon, StarOffIcon, StarIcon, PencilIcon, FolderOutputIcon, LockIcon, UserIcon, Trash2Icon, KeyRoundIcon, LinkIcon, SquareIcon, CheckSquareIcon } from "lucide-react"
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { ContextMenuItem, ContextMenuSeparator } from "@/components/ui/context-menu"
 import { Kbd } from "@/components/ui/kbd"
@@ -19,6 +19,8 @@ interface EntryData {
 interface EntryMenuItemsProps {
     data: EntryData;
     onEdit?: () => void;
+    isSelected?: boolean;
+    onToggleSelect?: () => void;
     onOpen?: () => void;
     onDelete?: () => void;
     onToggleFavorite?: () => void;
@@ -32,6 +34,8 @@ interface EntryMenuItemsProps {
 
 export const EntryMenuItems = ({ 
     data, 
+    isSelected = false, 
+    onToggleSelect = () => {},
     onEdit = () => {}, 
     onDelete = () => {}, 
     onOpen = () => {}, 
@@ -58,10 +62,10 @@ export const EntryMenuItems = ({
         <>
             <p className="text-muted-foreground px-1.5 py-1 text-xs font-medium">Actions</p>
 
-            <Item className="gap-2 cursor-pointer" onSelect={onOpen}>
+            <Item className="gap-2 cursor-pointer" onSelect={onToggleSelect}>
                 <div className="flex items-center gap-2 flex-1">
-                    <SquareIcon className="h-4 w-4" />
-                    <span>Select</span>
+                    {isSelected ? <CheckSquareIcon className="h-4 w-4" /> : <SquareIcon className="h-4 w-4" />}
+                    <span>{isSelected ? "Deselect" : "Select"}</span>
                 </div>
             </Item>
 
