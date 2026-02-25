@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Separator } from "@/components/ui/separator"
 
-import { CreateGroupDialog } from "./forms/create-new-group"
+import { GroupFormDialog } from "./forms/group-form-dialog"
 import GroupCard from "./cards/group-card/card"
 import { useGroup } from "@/contexts/group-context"
 import { AppLink } from "@/components/blocks/app-link"
@@ -31,11 +31,11 @@ const Leftbar = () => {
                 <SidebarGroup>
                     <div className="flex items-center gap-2 justify-between mb-2">
                         <SidebarGroupLabel>Groups</SidebarGroupLabel>
-                        <CreateGroupDialog>
+                        <GroupFormDialog mode="create">
                             <Button size="icon-xs" variant="secondary" className="text-primary">
                                 <PlusIcon />
                             </Button>
-                        </CreateGroupDialog>
+                        </GroupFormDialog>
                     </div>
                     {groups && groups.length > 0 && (
                         <div className="space-y-1">

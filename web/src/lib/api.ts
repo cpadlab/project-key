@@ -240,4 +240,9 @@ export const backendAPI = {
         return await api.search_entries(query);
     },
 
+    updateGroup: async (oldName: string, newName: string, icon: number = 48, color?: string): Promise<boolean> => {
+        const api = await getPywebviewApi();
+        return await api.update_group(oldName, newName, icon, color);
+    },
+
 }

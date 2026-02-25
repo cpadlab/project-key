@@ -16,6 +16,7 @@ from app.controllers.kdbx.operations import (
     list_groups as list_groups_controller,
     delete_group as delete_group_controller,
     add_entry as add_entry_controller,
+    update_group as update_group_controller,
     list_entries_by_group as list_entries_by_group_controllers,
     find_entries as find_entries_controller
 )
@@ -437,3 +438,15 @@ class API:
         except Exception as e:
             logger.error(f"Error searching entries: {e}")
             return []
+
+
+    def update_group(self, old_name: str, new_name: str, icon_id: int = 48, color: Optional[str] = None) -> bool:
+        try:
+            new_data = GroupModel(name=new_name, icon=icon_id, color=color)
+            success = update_group_controller(group_name=old_name, data=new_data)
+            if success:
+                logger.info(f"Group '{old_name}' successfully updated to '{new_name}'.")
+            return success
+        except Exception as e:
+            logger.error(f"Error in API update_group: {e}")
+            return False

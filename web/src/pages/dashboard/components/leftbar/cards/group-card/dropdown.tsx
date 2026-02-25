@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu"
 import { MoreVertical, Pencil, Trash2, Calendar, Clock } from "lucide-react"
 import { useState } from "react";
+
 import { DeleteGroupDialog } from "./delete-dialog";
+import { GroupFormDialog } from "../../forms/group-form-dialog";
 
 interface GroupDropdownProps {
     data: GroupModel;
@@ -12,6 +14,7 @@ interface GroupDropdownProps {
 export const GroupDropdown = ({ data }: GroupDropdownProps) => {
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
     const formatDate = (date?: string | Date) => {
         if (!date) return "N/A";
@@ -39,7 +42,7 @@ export const GroupDropdown = ({ data }: GroupDropdownProps) => {
 
                 <DropdownMenuContent align="start" className="w-56">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem className="gap-2 cursor-pointer">
+                    <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={() => setIsUpdateDialogOpen(true)}>
                         <Pencil className="h-4 w-4" />
                         <span>Modify</span>
                     </DropdownMenuItem>
@@ -66,6 +69,7 @@ export const GroupDropdown = ({ data }: GroupDropdownProps) => {
             </DropdownMenu>
 
             <DeleteGroupDialog onSuccess={() => {window.dispatchEvent(new CustomEvent('vault-changed'));}} groupName={data.name} isOpen={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} />
+            <GroupFormDialog mode="edit" initialData={data} open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen} />
 
         </>
     );

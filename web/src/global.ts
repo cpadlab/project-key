@@ -77,6 +77,7 @@ declare global {
                 preview_csv_import: (filePath: string, preset?: string, mapping?: any) => Promise<any[]>;
                 run_import: (entries: any[], targetGroup: string) => Promise<{ success: number; failed: number }>;
                 search_entries: (query: string) => Promise<any[]>;
+                update_group: (oldName: string, newName: string, icon: number, color?: string) => Promise<boolean>; // <--- Nuevo
             }
         }
     }
