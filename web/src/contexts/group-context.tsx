@@ -39,7 +39,6 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
         if (activeGroup !== "Personal" && groups.length > 0) {
             const groupExists = groups.some(g => g.name === activeGroup);
             if (!groupExists) {
-                console.log(`Group "${activeGroup}" was deleted. Redirecting to Personal.`);
                 setActiveGroup("Personal");
             }
         }
@@ -54,6 +53,7 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
         try {
             const data = await backend.listEntriesByGroup(groupName);
             setRawEntries(Array.isArray(data) ? data : []);
+            console.log(data)
         } catch (error) {
             console.error("Error fetching entries:", error);
             toast.error("Failed to load group entries");

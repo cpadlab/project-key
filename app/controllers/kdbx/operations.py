@@ -346,7 +346,7 @@ def add_entry(entry: EntryModel) -> bool:
             new_entry.set_custom_property("color", entry.color)
 
         if entry.icon is not None:
-            new_entry.set_custom_property("icon", str(entry.icon))
+            new_entry.set_custom_property("_icon", str(entry.icon))
 
         new_entry.set_custom_property("is_favorite", str(entry.is_favorite))
         
@@ -401,7 +401,9 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
         entry.tags = data.tags
         entry.otp = data.totp_seed
 
-        entry.set_custom_property("icon", str(data.icon))        
+        if data.icon is not None:
+            entry.set_custom_property("_icon", str(data.icon))
+            
         entry.set_custom_property("color", data.color)
         entry.set_custom_property("is_favorite", str(data.is_favorite))
         

@@ -34,6 +34,13 @@ class EntryModel(BaseModel):
         Create an EntryModel instance from a pykeepass Entry object.
         """
         custom = kp_entry.custom_properties
+        custom_icon = custom.get("_icon")
+        
+        try:
+            icon_val = int(custom_icon) if custom_icon is not None and str(custom_icon) != "None" else kp_entry.icon
+        except ValueError:
+            icon_val = kp_entry.icon
+
         return cls(
             uuid=str(kp_entry.uuid),
             title=kp_entry.title or "Untitled",
@@ -43,7 +50,7 @@ class EntryModel(BaseModel):
             notes=kp_entry.notes,
             group=kp_entry.group.name if kp_entry.group else "Personal",
             color=custom.get("color"),
-            icon=kp_entry.icon,
+            icon=icon_val,
             tags=kp_entry.tags or [],
             is_favorite=custom.get("is_favorite") == "True",
             totp_seed=kp_entry.otp,
