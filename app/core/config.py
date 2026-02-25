@@ -1,5 +1,6 @@
 import configparser
 import argparse
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Type
 from pydantic import Field
@@ -266,11 +267,11 @@ class Settings(BaseSettings):
             with open(path_to_save, 'w', encoding="utf-8") as configfile:
                 config.write(configfile)
                 
-            logger.info(f"Settings successfully saved in {path_to_save}")
+            logging.getLogger(self.PROJECT_NAME).info(f"Settings successfully saved in {path_to_save}")
             return True
 
         except Exception as e:
-            logger.error(f"Error persisting configuration in {path_to_save}: {e}")
+            logging.getLogger(self.PROJECT_NAME).error(f"Error persisting configuration in {path_to_save}: {e}")
             return False
 
 
