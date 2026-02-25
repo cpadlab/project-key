@@ -6,7 +6,6 @@ import logging
 from app.controllers.export import export_vault_data
 from app.utils.file import open_folder_in_explorer
 from app.core.config import settings, DEFAULT_INI_FILE
-from app.utils.logger import logger
 from app.controllers.kdbx.models import GroupModel, EntryModel
 from app.controllers.imports import (
     execute_final_import, parse_csv_to_models, get_csv_columns

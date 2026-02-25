@@ -337,9 +337,16 @@ def add_entry(entry: EntryModel) -> bool:
         target_group = vault.add_group(vault.root_group, group_name)
 
     try:
+        safe_tags = [str(t) for t in entry.tags if t] if isinstance(entry.tags, list) else []
+        
         new_entry = vault.add_entry(
-            target_group, entry.title, entry.username, entry.password, 
-            url=entry.url, notes=entry.notes, tags=entry.tags
+            target_group, 
+            entry.title or "Untitled", 
+            entry.username or "", 
+            entry.password or "", 
+            url=entry.url or "", 
+            notes=entry.notes or "", 
+            tags=safe_tags
         )
         
         if entry.color:
@@ -393,18 +400,31 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
         return False
 
     try:
-        entry.title = data.title
-        entry.username = data.username
-        entry.password = data.password
-        entry.url = data.url
-        entry.notes = data.notes
-        entry.tags = data.tags
-        entry.otp = data.totp_seed
+        entry.title = data.title or ""
+        entry.username = data.username or ""
+        entry.password = data.password or ""
+        entry.url = data.url or ""
+        entry.notes = data.notes or ""
+        
+        if isinstance(data.tags, list):
+            entry.tags = [str(t) for t in data.tags if t]
+        else:
+            entry.tags = []
+
+        if data.totp_seed:
+            entry.otp = data.totp_seed
+        elif entry.otp:
+            entry.otp = ""
 
         if data.icon is not None:
-            entry.set_custom_property("_icon", str(data.icon))
-            
-        entry.set_custom_property("color", data.color)
+            entry.set_custom_property("_icon", str(data.icon))        
+        
+        if data.color:
+            entry.set_custom_property("color", data.color)
+        else:
+            if "color" in entry.custom_properties:
+                entry.delete_custom_property("color")
+
         entry.set_custom_property("is_favorite", str(data.is_favorite))
         
         if data.group and data.group != entry.group.name:
