@@ -28,8 +28,8 @@ const DashboardPage = () => {
                     </Button>
 
                     <CreateNewEntryDialog>
-                        <Button size="sm" className="h-8">
-                            <PlusIcon className="size-4 mr-1" />
+                        <Button size="sm">
+                            <PlusIcon className="size-4" />
                             <span>Create New Entry</span>
                         </Button>
                     </CreateNewEntryDialog>
