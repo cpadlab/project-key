@@ -155,3 +155,16 @@
     opacity: 1.0;
     transform: rotate(3deg) translate(0px, -4px);
 }
+
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+input::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}

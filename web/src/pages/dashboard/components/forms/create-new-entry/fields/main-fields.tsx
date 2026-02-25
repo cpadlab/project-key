@@ -2,10 +2,11 @@ import { type Control, Controller } from "react-hook-form"
 import { EyeIcon, EyeOffIcon, FolderIcon } from "lucide-react"
 import { useState } from "react"
 import { Field, FieldLabel, FieldError } from "@/components/ui/field"
-import { Input } from "@/components/ui/input" // Importamos el Input normal
+import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { GroupModel } from "@/global"
+import { useGroup } from "@/contexts/group-context"
 
 interface Props {
     control: Control<any>
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export const MainFields = ({ control, groups }: Props) => {
+
+    const { activeGroup } = useGroup()
     const [showPassword, setShowPassword] = useState(false)
 
     return (
@@ -26,10 +29,10 @@ export const MainFields = ({ control, groups }: Props) => {
                     </Field>
                 )} />
                 
-                <Controller name="group" control={control} render={({ field }) => (
+                <Controller name="group" defaultValue={activeGroup} control={control} render={({ field }) => (
                     <Field>
                         <FieldLabel htmlFor="group">Group</FieldLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value || activeGroup}>
                             <SelectTrigger id="group">
                                 <SelectValue />
                             </SelectTrigger>

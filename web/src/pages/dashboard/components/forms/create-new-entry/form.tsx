@@ -76,11 +76,9 @@ export const CreateNewEntryDialog = ({ children }: { children: React.ReactNode }
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
                         <MainFields control={form.control} groups={groups} />
-                        <Separator />
                         <ExtraFields control={form.control} />
-                        <Separator />
                         <VisualFields control={form.control} />
-                        <div className="flex justify-end gap-3 pt-4 border-t sticky bottom-0 bg-background pb-2">
+                        <div className="flex justify-end gap-3 bg-background pb-2">
                             <Button type="submit" className="w-full sm:w-auto">
                                 <SaveIcon className="size-4 mr-2" /> Create Entry
                             </Button>
