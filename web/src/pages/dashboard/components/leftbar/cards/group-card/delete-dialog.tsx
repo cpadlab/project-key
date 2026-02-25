@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 
 import { backendAPI as backend } from "@/lib/api";
-import { type GroupModel } from "@/global";
+import { useGroup } from "@/contexts/group-context";
 
 interface DeleteGroupDialogProps {
     groupName: string;
@@ -19,28 +19,9 @@ interface DeleteGroupDialogProps {
 export const DeleteGroupDialog = ({ groupName, isOpen, onClose, onSuccess }: DeleteGroupDialogProps) => {
     
     const [deleteMode, setDeleteMode] = useState<"move" | "force">("move");
-    const [groups, setGroups] = useState<GroupModel[]>([]);
     const [targetGroup, setTargetGroup] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        if (isOpen) {
-            const fetchGroups = async () => {
-                try {
-                    const data = await backend.listGroups();
-                    const filtered = data.filter(g => g.name !== groupName);
-                    setGroups(filtered);
-                    if (filtered.length > 0) {
-                        const defaultGroup = filtered.find(g => g.name === "Personal") || filtered[0];
-                        setTargetGroup(defaultGroup.name);
-                    }
-                } catch (error) {
-                    console.error("Error fetching groups:", error);
-                }
-            };
-            fetchGroups();
-        }
-    }, [isOpen, groupName]);
+    const { groups: allGroups, refreshGroups } = useGroup();
 
     const handleDelete = async () => {
         setIsLoading(true);
@@ -51,6 +32,7 @@ export const DeleteGroupDialog = ({ groupName, isOpen, onClose, onSuccess }: Del
             
             if (success) {
                 toast.success(`Group '${groupName}' deleted successfully`);
+                refreshGroups()
                 onSuccess();
                 onClose();
             } else {
@@ -63,6 +45,8 @@ export const DeleteGroupDialog = ({ groupName, isOpen, onClose, onSuccess }: Del
             setIsLoading(false);
         }
     };
+
+    const groups = useMemo(() => allGroups.filter(g => g.name !== groupName), [allGroups, groupName]);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

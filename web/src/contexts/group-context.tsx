@@ -1,8 +1,11 @@
-import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode, useCallback } from "react";
 import { toast } from "sonner";
 import { backendAPI as backend } from "@/lib/api";
+import type { GroupModel } from "@/global";
 
 interface GroupContextType {
+    groups: GroupModel[];
+    refreshGroups: () => Promise<void>;
     activeGroup: string;
     setActiveGroup: (name: string) => void;
     entries: any[];
@@ -15,10 +18,20 @@ const GroupContext = createContext<GroupContextType | undefined>(undefined);
 
 export const GroupProvider = ({ children }: { children: ReactNode }) => {
     
+    const [groups, setGroups] = useState<GroupModel[]>([]);
     const [activeGroup, setActiveGroup] = useState("Personal");
     const [rawEntries, setRawEntries] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [sortOrder, setSortOrder] = useState("az");
+
+    const refreshGroups = useCallback(async () => {
+        try {
+            const data = await backend.listGroups();
+            setGroups(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Error fetching groups:", error);
+        }
+    }, []);
 
     const fetchEntries = async (groupName: string) => {
         if (isLoading) return;
@@ -51,23 +64,33 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     }, [rawEntries, sortOrder]);
 
     useEffect(() => {
+        
+        refreshGroups();
         fetchEntries(activeGroup);
-        const handleVaultChange = () => fetchEntries(activeGroup);
-        window.addEventListener('vault-changed', handleVaultChange);
-        return () => {
-            window.removeEventListener('vault-changed', handleVaultChange);
+
+        const handleVaultChange = () => {
+            refreshGroups();
+            fetchEntries(activeGroup);
         };
-    }, [activeGroup]); 
+
+        window.addEventListener('vault-changed', handleVaultChange);
+        return () => window.removeEventListener('vault-changed', handleVaultChange);
+
+    }, [activeGroup, refreshGroups, fetchEntries]);
+
+    const value = {
+        groups,
+        refreshGroups,
+        activeGroup, 
+        setActiveGroup, 
+        entries: sortedEntries,
+        isLoading,
+        sortOrder,
+        setSortOrder
+    }
 
     return (
-        <GroupContext.Provider value={{ 
-            activeGroup, 
-            setActiveGroup, 
-            entries: sortedEntries,
-            isLoading,
-            sortOrder,
-            setSortOrder
-        }}>
+        <GroupContext.Provider value={value}>
             {children}
         </GroupContext.Provider>
     );

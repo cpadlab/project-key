@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { DownloadIcon, FileJsonIcon, FileSpreadsheetIcon, ShieldAlertIcon, ArrowRightIcon } from "lucide-react"
 import { toast } from "sonner"
 
@@ -7,18 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { backendAPI as backend } from "@/lib/api"
-import type { GroupModel } from "@/global"
+import { useGroup } from "@/contexts/group-context"
 
 export const ExportCard = () => {
 
     const [format, setFormat] = useState<"csv" | "json">("csv")
     const [scope, setScope] = useState<string>("all")
-    const [groups, setGroups] = useState<GroupModel[]>([])
     const [isExporting, setIsExporting] = useState(false)
-
-    useEffect(() => {
-        backend.listGroups().then(setGroups).catch(console.error)
-    }, [])
+    const { groups } = useGroup();
 
     const handleExport = async () => {
         setIsExporting(true)

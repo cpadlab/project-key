@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 
 import { ImportPreviewDialog } from "./preview-dialog"
 import { backendAPI as backend } from "@/lib/api"
+import { useGroup } from "@/contexts/group-context"
 
 const PRESETS = [
     { id: "chrome", name: "Google Chrome" },
@@ -29,7 +30,6 @@ export const ImportCard = () => {
     const [filePath, setFilePath] = useState<string | null>(null)
     const [preset, setPreset] = useState<string>("chrome")
     const [targetGroup, setTargetGroup] = useState<string>("Personal")
-    const [groups, setGroups] = useState<any[]>([])
     const [csvColumns, setCsvColumns] = useState<string[]>([])
     const [mapping, setMapping] = useState<Record<string, string[]>>({
         title: ["name", "none"], 
@@ -40,10 +40,7 @@ export const ImportCard = () => {
     })
     const [previewEntries, setPreviewEntries] = useState<any[]>([])
     const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-
-    useEffect(() => {
-        backend.listGroups().then(setGroups)
-    }, [])
+    const { groups } = useGroup();
 
     useEffect(() => {
         const loadColumns = async () => {

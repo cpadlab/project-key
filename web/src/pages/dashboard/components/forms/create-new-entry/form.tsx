@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -11,10 +11,10 @@ import { Separator } from "@/components/ui/separator"
 
 
 import { backendAPI as backend } from "@/lib/api"
-import type { GroupModel } from "@/global"
 import { MainFields } from "./fields/main-fields"
 import { VisualFields } from "./fields/visual-fields"
 import { ExtraFields } from "./fields/extra-fields"
+import { useGroup } from "@/contexts/group-context"
 
 const entrySchema = z.object({
     title: z.string().min(1, "Title is required").max(100),
@@ -34,7 +34,7 @@ type EntryFormData = z.infer<typeof entrySchema>
 export const CreateNewEntryDialog = ({ children }: { children: React.ReactNode }) => {
     
     const [open, setOpen] = useState(false)
-    const [groups, setGroups] = useState<GroupModel[]>([])
+    const { groups } = useGroup();
 
     const form = useForm<EntryFormData>({
         resolver: zodResolver(entrySchema),
@@ -44,15 +44,6 @@ export const CreateNewEntryDialog = ({ children }: { children: React.ReactNode }
             tags: [], is_favorite: false,
         },
     })
-
-    const fetchGroups = async () => {
-        try {
-            const data = await backend.listGroups()
-            setGroups(data)
-        } catch (error) { console.error(error) }
-    }
-
-    useEffect(() => { if (open) fetchGroups() }, [open])
 
     const onSubmit = async (data: EntryFormData) => {
         const loadingId = toast.loading("Saving new entry...")

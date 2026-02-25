@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { LogOutIcon, PlusIcon, Settings2Icon, ShieldCheckIcon, ChevronRight, PaletteIcon, HardDriveIcon, MonitorCheckIcon, SettingsIcon, ArrowLeftRightIcon} from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -7,9 +6,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Separator } from "@/components/ui/separator"
 
 import { CreateGroupDialog } from "./forms/create-new-group"
-import { backendAPI as backend } from '@/lib/api'
-import type { GroupModel } from "@/global"
 import GroupCard from "./cards/group-card/card"
+import { useGroup } from "@/contexts/group-context"
 
 const settingsSubItems = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
@@ -22,23 +20,8 @@ const settingsSubItems = [
 
 const Leftbar = () => {
 
-    const [groups, setGroups] = useState<GroupModel[]>([]);
+    const { groups } = useGroup();
     const location = useLocation();
-
-    const fetchGroups = async () => {
-        try {
-            const data = await backend.listGroups();
-            setGroups(data);                
-        } catch (error) {
-            console.error("Error fetching groups:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchGroups();
-        window.addEventListener('vault-changed', fetchGroups);
-        return () => window.removeEventListener('vault-changed', fetchGroups);
-    }, []);
 
     return (
         <Sidebar>
