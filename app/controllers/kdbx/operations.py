@@ -1,4 +1,5 @@
 import json
+import uuid
 import logging
 from datetime import datetime
 from typing import List, Optional, Literal
@@ -380,7 +381,13 @@ def update_entry(entry_uuid: str, data: EntryModel) -> bool:
     if not vault:
         return False
 
-    entry = vault.find_entries(uuid=entry_uuid, first=True)
+    try:
+        parsed_uuid = uuid.UUID(entry_uuid)
+    except (ValueError, AttributeError):
+        logger.error(f"Invalid UUID format: {entry_uuid}")
+        return False
+
+    entry = vault.find_entries(uuid=parsed_uuid, first=True)
     if not entry:
         logger.error(f"Update failed: Entry with UUID {entry_uuid} not found.")
         return False

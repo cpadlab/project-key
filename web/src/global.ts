@@ -76,6 +76,7 @@ declare global {
                 get_csv_columns: (filePath: string) => Promise<string[]>;
                 preview_csv_import: (filePath: string, preset?: string, mapping?: any) => Promise<any[]>;
                 run_import: (entries: any[], targetGroup: string) => Promise<{ success: number; failed: number }>;
+                search_entries: (query: string) => Promise<any[]>;
             }
         }
     }

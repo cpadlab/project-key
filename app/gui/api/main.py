@@ -16,7 +16,8 @@ from app.controllers.kdbx.operations import (
     list_groups as list_groups_controller,
     delete_group as delete_group_controller,
     add_entry as add_entry_controller,
-    list_entries_by_group as list_entries_by_group_controllers
+    list_entries_by_group as list_entries_by_group_controllers,
+    find_entries as find_entries_controller
 )
 from app.controllers.kdbx.manager import (
     generate_keyfile, create_new_vault, open_vault as open_vault_controller,
@@ -426,4 +427,13 @@ class API:
             return get_csv_columns(file_path)
         except Exception as e:
             logger.error(f"Error fetching CSV columns via API: {e}")
+            return []
+
+
+    def search_entries(self, query: str) -> List[Dict]:
+        try:
+            entries = find_entries_controller(query=query)
+            return [e.model_dump(mode='json') for e in entries]
+        except Exception as e:
+            logger.error(f"Error searching entries: {e}")
             return []

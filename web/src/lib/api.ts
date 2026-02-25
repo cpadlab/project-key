@@ -235,4 +235,9 @@ export const backendAPI = {
         return await api.run_import(entries, targetGroup);
     },
 
+    searchEntries: async (query: string): Promise<any[]> => {
+        const api = await getPywebviewApi();
+        return await api.search_entries(query);
+    },
+
 }

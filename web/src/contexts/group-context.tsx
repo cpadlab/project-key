@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo, type ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef, type ReactNode } from "react";
 import { toast } from "sonner";
 import { backendAPI as backend } from "@/lib/api";
 import type { GroupModel } from "@/global";
@@ -24,6 +24,8 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [sortOrder, setSortOrder] = useState("az");
 
+    const isFetchingRef = useRef(false);
+
     const refreshGroups = useCallback(async () => {
         try {
             const data = await backend.listGroups();
@@ -33,9 +35,12 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    const fetchEntries = async (groupName: string) => {
-        if (isLoading) return;
+    const fetchEntries = useCallback(async (groupName: string) => {
+        
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
         setIsLoading(true);
+        
         try {
             const data = await backend.listEntriesByGroup(groupName);
             setRawEntries(Array.isArray(data) ? data : []);
@@ -44,22 +49,19 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
             toast.error("Failed to load group entries");
         } finally {
             setIsLoading(false);
+            isFetchingRef.current = false;
         }
-    };
+
+    }, []);
 
     const sortedEntries = useMemo(() => {
         const items = [...rawEntries];
         switch (sortOrder) {
-            case "az": 
-                return items.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-            case "za": 
-                return items.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
-            case "newest": 
-                return items.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
-            case "oldest": 
-                return items.sort((a, b) => new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime());
-            default: 
-                return items;
+            case "az": return items.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+            case "za": return items.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+            case "newest": return items.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+            case "oldest": return items.sort((a, b) => new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime());
+            default: return items;
         }
     }, [rawEntries, sortOrder]);
 
@@ -75,22 +77,20 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
 
         window.addEventListener('vault-changed', handleVaultChange);
         return () => window.removeEventListener('vault-changed', handleVaultChange);
-
+        
     }, [activeGroup, refreshGroups, fetchEntries]);
 
-    const value = {
-        groups,
-        refreshGroups,
-        activeGroup, 
-        setActiveGroup, 
-        entries: sortedEntries,
-        isLoading,
-        sortOrder,
-        setSortOrder
-    }
-
     return (
-        <GroupContext.Provider value={value}>
+        <GroupContext.Provider value={{ 
+            groups,
+            refreshGroups,
+            activeGroup, 
+            setActiveGroup, 
+            entries: sortedEntries,
+            isLoading,
+            sortOrder,
+            setSortOrder
+        }}>
             {children}
         </GroupContext.Provider>
     );
