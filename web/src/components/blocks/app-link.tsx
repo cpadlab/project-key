@@ -1,7 +1,8 @@
 
 import React, { useTransition } from "react"
-import { useNavigate, Link as RouterLink, type LinkProps } from "react-router-dom"
+import { Link as RouterLink, type LinkProps } from "react-router-dom"
 import nprogress from "nprogress"
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 
 nprogress.configure({ 
     showSpinner: false, 
@@ -12,7 +13,7 @@ nprogress.configure({
 
 export const AppLink = ({ to, children, ...props }: LinkProps) => {
     
-    const navigate = useNavigate()
+    const { navigate } = useAppNavigate()
     const [isPending, startTransition] = useTransition()
 
     const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {

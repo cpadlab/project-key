@@ -8,7 +8,7 @@ import { Field, FieldError } from "@/components/ui/field"
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton} from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
-import { useNavigate } from "react-router-dom"
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 
 import { backendAPI as backend } from "@/lib/api"
 
@@ -23,7 +23,7 @@ type UnlockFormValues = z.infer<typeof unlockSchema>
 export const UnlockVault = () => {
 
     const [showPassword, setShowPassword] = useState(false)
-    const navigate = useNavigate()
+    const { navigate } = useAppNavigate()
 
     const form = useForm<UnlockFormValues>({
         resolver: zodResolver(unlockSchema),

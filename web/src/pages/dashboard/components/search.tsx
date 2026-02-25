@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import { SearchIcon, KeyIcon, FolderIcon, SettingsIcon, PaletteIcon, ShieldCheckIcon, HardDriveIcon, MonitorCheckIcon, DownloadIcon, UploadIcon, Trash2Icon, FileTextIcon, HistoryIcon} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
@@ -9,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { useGroup } from "@/contexts/group-context"
 import { backendAPI as backend } from "@/lib/api"
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 
 const SETTINGS_COMMANDS = [
     { title: "Close Behavior", path: "/settings/appearance", icon: SettingsIcon, keywords: "close exit minimize" },
@@ -33,7 +33,7 @@ export const Search = () => {
     const [query, setQuery] = useState("")
     const [entries, setEntries] = useState<any[]>([])
     const { groups, setActiveGroup } = useGroup()
-    const navigate = useNavigate()
+    const { navigate } = useAppNavigate()
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {

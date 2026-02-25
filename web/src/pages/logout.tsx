@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 import { Spinner } from "@/components/ui/spinner";
 
 import { backendAPI as backend } from "@/lib/api";
 
 const LogoutPage = () => {
 
-    const navigate = useNavigate();
+    const { navigate } = useAppNavigate();
 
     useEffect(() => {
 

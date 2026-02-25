@@ -1,12 +1,12 @@
 import { Spinner } from "@/components/ui/spinner"
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 
 import { backendAPI as backend } from "@/lib/api"
 
 const RouteDirector = () => {
 
-    const navigate = useNavigate()
+    const { navigate } = useAppNavigate()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {

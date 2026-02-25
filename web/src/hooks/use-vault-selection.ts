@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 import { toast } from "sonner";
 
 import { backendAPI as backend } from "@/lib/api";
 
 export const useVaultSelection = (onHistoryChange?: () => void) => {
     
-    const navigate = useNavigate();
+    const { navigate } = useAppNavigate();
 
     const handleSelectVault = async (path: string) => {
         try {

@@ -11,7 +11,7 @@ import { Field, FieldLabel, FieldError, FieldDescription, FieldContent } from "@
 import { Switch } from "@/components/ui/switch"
 
 import { backendAPI as backend } from "@/lib/api"
-import { useNavigate } from "react-router-dom"
+import { useAppNavigate } from "@/hooks/use-app-navigate"
 
 const formSchema = z.object({
     filename: z
@@ -42,7 +42,7 @@ export const CreateNewVaultDialog = ({ children }: CreateNewVaultDialogProps) =>
     const [open, setOpen] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
 
-    const navigate = useNavigate()
+    const { navigate } = useAppNavigate()
 
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
