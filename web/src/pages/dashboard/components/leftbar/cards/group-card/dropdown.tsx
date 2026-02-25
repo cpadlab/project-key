@@ -8,10 +8,11 @@ import { GroupMenuItems } from "./menu-items"
 interface GroupDropdownProps {
     data: GroupModel;
     onEdit: () => void;
+    onOpen: () => void;
     onDelete: () => void;
 }
 
-export const GroupDropdown = ({ data, onEdit, onDelete }: GroupDropdownProps) => {
+export const GroupDropdown = ({ data, onEdit, onOpen, onDelete }: GroupDropdownProps) => {
     return (
         <DropdownMenu>
             
@@ -22,7 +23,7 @@ export const GroupDropdown = ({ data, onEdit, onDelete }: GroupDropdownProps) =>
             </DropdownMenuTrigger>
             
             <DropdownMenuContent align="start" className="w-56">
-                <GroupMenuItems data={data} onEdit={onEdit} onDelete={onDelete} />
+                <GroupMenuItems data={data} onEdit={onEdit} onDelete={onDelete} onOpen={onOpen} />
             </DropdownMenuContent>
 
         </DropdownMenu>

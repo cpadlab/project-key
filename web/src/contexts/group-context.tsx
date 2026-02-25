@@ -35,6 +35,16 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
+    useEffect(() => {
+        if (activeGroup !== "Personal" && groups.length > 0) {
+            const groupExists = groups.some(g => g.name === activeGroup);
+            if (!groupExists) {
+                console.log(`Group "${activeGroup}" was deleted. Redirecting to Personal.`);
+                setActiveGroup("Personal");
+            }
+        }
+    }, [groups, activeGroup]);
+
     const fetchEntries = useCallback(async (groupName: string) => {
         
         if (isFetchingRef.current) return;
