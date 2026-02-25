@@ -8,7 +8,7 @@ import { useGroup } from "@/contexts/group-context";
 
 export const ListView = () => {
     
-    const { entries, isLoading } = useGroup();
+    const { entries } = useGroup();
 
     const generalEntries = entries.filter(item => !item.is_favorite);
     const bookmarksEntries = entries.filter(item => item.is_favorite);

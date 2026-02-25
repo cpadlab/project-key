@@ -70,6 +70,9 @@ export const GroupMenuItems = ({ data, onEdit, onDelete, onOpen, isContext = fal
                 </div>
                 <Kbd>Ctrl + M</Kbd>
             </Item>
+
+            <Separator />
+            
             <Item variant="destructive" className="gap-2 cursor-pointer" onSelect={onDelete}>
                 <div className="flex items-center gap-2 flex-1">
                     <Trash2 className="h-4 w-4 text-destructive" />
