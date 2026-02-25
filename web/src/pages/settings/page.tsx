@@ -3,8 +3,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 
 import { settingsNav } from "./components/leftbar"
-import { Link } from "react-router-dom"
 import { VersionBadge } from "@/components/blocks/version-badge"
+import { AppLink } from "@/components/blocks/app-link"
 
 const SettingsPage = () => {
     return (
@@ -22,12 +22,12 @@ const SettingsPage = () => {
 
             <div className="grid sm:grid-cols-3 gap-4">
                 {settingsNav.map((item, index) => (
-                    <Link to={item.href} key={index} className="gap-4 text-sm font-semibold px-6 py-4 bg-card flex items-center cursor-pointer rounded-sm hover:bg-card/70 transition-all duration-300 border">
+                    <AppLink to={item.href} key={index} className="gap-4 text-sm font-semibold px-6 py-4 bg-card flex items-center cursor-pointer rounded-sm hover:bg-card/70 transition-all duration-300 border">
                         <div className="rounded-full bg-primary/10 p-2 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/20">
                             <item.icon className="size-4" />
                         </div>
                         <span>{item.title}</span>
-                    </Link>
+                    </AppLink>
                 ))}
             </div>
 

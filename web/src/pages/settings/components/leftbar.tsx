@@ -1,9 +1,10 @@
 import { Fragment } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { PaletteIcon, ShieldCheckIcon, HardDriveIcon, Settings2Icon, MonitorCheckIcon, LogOutIcon, LayoutDashboardIcon, ArrowLeftRightIcon } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import type { FooterGroup } from "@/global"
+import { AppLink } from "@/components/blocks/app-link"
 
 export const settingsNav = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
@@ -57,10 +58,10 @@ export const SettingsSidebar = () => {
                                 const isActive = location.pathname.includes(item.href)
                                 return (
                                     <SidebarMenuItem key={item.href}><SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                                        <Link to={item.href}>
+                                        <AppLink to={item.href}>
                                             <item.icon />
                                             <span>{item.title}</span>
-                                        </Link>
+                                        </AppLink>
                                     </SidebarMenuButton></SidebarMenuItem>
                                 )
                             })}
@@ -77,10 +78,10 @@ export const SettingsSidebar = () => {
                         <SidebarMenu>
                             {group.items.map((item, idx_item) => (
                                 <SidebarMenuItem key={idx_item}><SidebarMenuButton className={item.className} asChild tooltip={item.label}>
-                                    <Link to={item.href}>
+                                    <AppLink to={item.href}>
                                         <item.icon />
                                         <span>{item.label}</span>
-                                    </Link>
+                                    </AppLink>
                                 </SidebarMenuButton></SidebarMenuItem>
                             ))}
                         </SidebarMenu>

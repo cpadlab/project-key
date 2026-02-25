@@ -1,5 +1,5 @@
+import { AppLink } from "@/components/blocks/app-link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,} from "@/components/ui/breadcrumb"
-import { Link } from "react-router-dom"
 
 export const BreadcrumbRoute = ({ page }: { page: string }) => {
     return (
@@ -8,7 +8,7 @@ export const BreadcrumbRoute = ({ page }: { page: string }) => {
                 
                 <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                        <Link to="/dashboard">Dashboard</Link>
+                        <AppLink to="/dashboard">Dashboard</AppLink>
                     </BreadcrumbLink>
                 </BreadcrumbItem>
 
@@ -16,7 +16,7 @@ export const BreadcrumbRoute = ({ page }: { page: string }) => {
                 
                 <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                        <Link to="/settings">Settings</Link>
+                        <AppLink to="/settings">Settings</AppLink>
                     </BreadcrumbLink>
                 </BreadcrumbItem>
                 

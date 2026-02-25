@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { CreateGroupDialog } from "./forms/create-new-group"
 import GroupCard from "./cards/group-card/card"
 import { useGroup } from "@/contexts/group-context"
+import { AppLink } from "@/components/blocks/app-link"
 
 const settingsSubItems = [
     { title: "Appearance", href: "/settings/appearance", icon: PaletteIcon },
@@ -53,10 +54,10 @@ const Leftbar = () => {
                     
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild tooltip="Pass Monitor" isActive={location.pathname === "/monitor"}>
-                            <Link to="/monitor">
+                            <AppLink to="/monitor">
                                 <ShieldCheckIcon />
                                 <span>Pass Monitor</span>
-                            </Link>
+                            </AppLink>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
 

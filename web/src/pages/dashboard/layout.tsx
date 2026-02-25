@@ -31,13 +31,13 @@ const DashboardLayout = () => {
         
     }, [navigate]);
 
-     if (isChecking) {
+    /* if (isChecking) {
         return (
             <div className="flex h-full w-full items-center justify-center">
                 <Spinner />
             </div>
         );
-    }
+    } */
 
     return (
         <SidebarProvider>
